@@ -1,0 +1,17 @@
+# .NET Build Results
+[Bb]in/
+[Oo]bj/
+[Ll]ogs/
+[Uu]serFiles/
+
+# Visual Studio cache/options
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# NuGet
+**/project.lock.json
+**/project.fragment.lock.json
+./artifacts/

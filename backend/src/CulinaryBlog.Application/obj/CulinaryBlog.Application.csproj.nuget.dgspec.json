@@ -1,25 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "/app/applet/backend/src/CulinaryBlog.Application/CulinaryBlog.Application.csproj": {}
+    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj": {}
   },
   "projects": {
-    "/app/applet/backend/src/CulinaryBlog.Application/CulinaryBlog.Application.csproj": {
+    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/app/applet/backend/src/CulinaryBlog.Application/CulinaryBlog.Application.csproj",
+        "projectUniqueName": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj",
         "projectName": "CulinaryBlog.Application",
-        "projectPath": "/app/applet/backend/src/CulinaryBlog.Application/CulinaryBlog.Application.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/app/applet/backend/src/CulinaryBlog.Application/obj/",
+        "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -27,8 +34,8 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "/app/applet/backend/src/CulinaryBlog.Domain/CulinaryBlog.Domain.csproj": {
-                "projectPath": "/app/applet/backend/src/CulinaryBlog.Domain/CulinaryBlog.Domain.csproj"
+              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj": {
+                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj"
               }
             }
           }
@@ -43,7 +50,7 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.400"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net10.0": {
@@ -83,7 +90,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.401/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
@@ -361,22 +368,29 @@
         }
       }
     },
-    "/app/applet/backend/src/CulinaryBlog.Domain/CulinaryBlog.Domain.csproj": {
+    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/app/applet/backend/src/CulinaryBlog.Domain/CulinaryBlog.Domain.csproj",
+        "projectUniqueName": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj",
         "projectName": "CulinaryBlog.Domain",
-        "projectPath": "/app/applet/backend/src/CulinaryBlog.Domain/CulinaryBlog.Domain.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/app/applet/backend/src/CulinaryBlog.Domain/obj/",
+        "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -396,7 +410,7 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.400"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net10.0": {
@@ -418,7 +432,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.401/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

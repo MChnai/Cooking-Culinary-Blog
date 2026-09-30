@@ -104,7 +104,7 @@ apiV1.MapGroup("/system")
          int recipesCount = canConnect ? await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.CountAsync(db.Recipes) : 0;
 
          return TypedResults.Ok(new
-         {
+         {  
              databaseConnected = canConnect,
              categoriesCount,
              recipesCount,
