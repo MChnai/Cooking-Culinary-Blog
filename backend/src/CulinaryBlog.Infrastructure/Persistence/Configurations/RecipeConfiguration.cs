@@ -37,11 +37,11 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Property(r => r.IsDeleted).HasColumnName("is_deleted").HasDefaultValue(false);
         builder.Property(r => r.DeletedAt).HasColumnName("deleted_at");
 
-        builder.Property(r => r.RowVersion)
-            .HasColumnName("xmin")
-            .HasColumnType("xid")
-            .ValueGeneratedOnAddOrUpdate()
-            .IsConcurrencyToken();
+        // builder.Property(r => r.RowVersion)
+        //     .HasColumnName("xmin")
+        //     .HasColumnType("xid")
+        //     .ValueGeneratedOnAddOrUpdate()
+        //     .IsConcurrencyToken();
 
         // Owned Entity Nutrition
         builder.OwnsOne(r => r.Nutrition, nb =>

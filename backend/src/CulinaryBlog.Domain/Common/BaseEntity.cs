@@ -7,5 +7,4 @@ public abstract class BaseEntity
     public DateTime? UpdatedAt { get; set; }
     public bool IsDeleted { get; set; } = false;
     public DateTime? DeletedAt { get; set; }
-    public uint RowVersion { get; set; }
 }
