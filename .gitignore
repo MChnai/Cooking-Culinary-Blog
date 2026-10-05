@@ -1,8 +1,15 @@
-node_modules/
-build/
-dist/
-coverage/
-.DS_Store
-*.log
-.env*
-!.env.example
+# .NET Build outputs
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Python Cache
+__pycache__/
+*.py[cod]
+
+# IDE
+.vs/
+.vscode/
+.idea/
