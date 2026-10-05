@@ -94,9 +94,6 @@ CREATE TABLE IF NOT EXISTS recipes (
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     deleted_at TIMESTAMPTZ,
 
-    -- PostgreSQL Concurrency Token (RowVersion xmin)
-    xmin xid,
-
     -- PostgreSQL 16 Full-Text Search tsvector Column
     search_vector tsvector GENERATED ALWAYS AS (
         to_tsvector('simple', coalesce(title, '') || ' ' || coalesce(description, '') || ' ' || coalesce(instructions, ''))

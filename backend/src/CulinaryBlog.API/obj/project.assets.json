@@ -105,24 +105,27 @@
           "Microsoft.AspNetCore.App"
         ]
       },
-      "Microsoft.AspNetCore.OpenApi/9.0.2": {
+      "Microsoft.AspNetCore.OpenApi/10.0.12": {
         "type": "package",
         "dependencies": {
-          "Microsoft.OpenApi": "1.6.17"
+          "Microsoft.OpenApi": "[2.12.0, 3.0.0)"
         },
         "compile": {
-          "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll": {
+          "lib/net10.0/Microsoft.AspNetCore.OpenApi.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll": {
+          "lib/net10.0/Microsoft.AspNetCore.OpenApi.dll": {
             "related": ".xml"
           }
         },
         "frameworkReferences": [
           "Microsoft.AspNetCore.App"
-        ]
+        ],
+        "build": {
+          "build/Microsoft.AspNetCore.OpenApi.targets": {}
+        }
       },
       "Microsoft.Bcl.AsyncInterfaces/7.0.0": {
         "type": "package",
@@ -654,15 +657,15 @@
           }
         }
       },
-      "Microsoft.OpenApi/1.6.17": {
+      "Microsoft.OpenApi/2.12.0": {
         "type": "package",
         "compile": {
-          "lib/netstandard2.0/Microsoft.OpenApi.dll": {
+          "lib/net8.0/Microsoft.OpenApi.dll": {
             "related": ".pdb;.xml"
           }
         },
         "runtime": {
-          "lib/netstandard2.0/Microsoft.OpenApi.dll": {
+          "lib/net8.0/Microsoft.OpenApi.dll": {
             "related": ".pdb;.xml"
           }
         }
@@ -713,15 +716,15 @@
           }
         }
       },
-      "Scalar.AspNetCore/2.0.18": {
+      "Scalar.AspNetCore/2.17.13": {
         "type": "package",
         "compile": {
-          "lib/net9.0/Scalar.AspNetCore.dll": {
+          "lib/net10.0/Scalar.AspNetCore.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net9.0/Scalar.AspNetCore.dll": {
+          "lib/net10.0/Scalar.AspNetCore.dll": {
             "related": ".xml"
           }
         },
@@ -1049,19 +1052,21 @@
         "microsoft.aspnetcore.authentication.jwtbearer.nuspec"
       ]
     },
-    "Microsoft.AspNetCore.OpenApi/9.0.2": {
-      "sha512": "JUndpjRNdG8GvzBLH/J4hen4ehWaPcshtiQ6+sUs1Bcj3a7dOsmWpDloDlpPeMOVSlhHwUJ3Xld0ClZjsFLgFQ==",
+    "Microsoft.AspNetCore.OpenApi/10.0.12": {
+      "sha512": "7RnQ/UKn+kK3JDLmTpW+vVqNErWthGPAVAy1aIiBzv4ucQ6g9NFvOJUuT0PHcpvcJxGVxctMxj6t+NESWMrgHQ==",
       "type": "package",
-      "path": "microsoft.aspnetcore.openapi/9.0.2",
+      "path": "microsoft.aspnetcore.openapi/10.0.12",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "PACKAGE.md",
         "THIRD-PARTY-NOTICES.TXT",
-        "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll",
-        "lib/net9.0/Microsoft.AspNetCore.OpenApi.xml",
-        "microsoft.aspnetcore.openapi.9.0.2.nupkg.sha512",
+        "analyzers/dotnet/cs/Microsoft.AspNetCore.OpenApi.SourceGenerators.dll",
+        "build/Microsoft.AspNetCore.OpenApi.targets",
+        "lib/net10.0/Microsoft.AspNetCore.OpenApi.dll",
+        "lib/net10.0/Microsoft.AspNetCore.OpenApi.xml",
+        "microsoft.aspnetcore.openapi.10.0.12.nupkg.sha512",
         "microsoft.aspnetcore.openapi.nuspec"
       ]
     },
@@ -2293,18 +2298,21 @@
         "microsoft.identitymodel.tokens.nuspec"
       ]
     },
-    "Microsoft.OpenApi/1.6.17": {
-      "sha512": "Le+kehlmrlQfuDFUt1zZ2dVwrhFQtKREdKBo+rexOwaCoYP0/qpgT9tLxCsZjsgR5Itk1UKPcbgO+FyaNid/bA==",
+    "Microsoft.OpenApi/2.12.0": {
+      "sha512": "0xB/be+f6qYOhvQPUrVsLrau+fkowYv6gt9RIkajMhwT7sZnqtcA797yW3bS5kgSje+AQW4xZgyLnW641YFioQ==",
       "type": "package",
-      "path": "microsoft.openapi/1.6.17",
+      "path": "microsoft.openapi/2.12.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
+        "lib/net8.0/Microsoft.OpenApi.dll",
+        "lib/net8.0/Microsoft.OpenApi.pdb",
+        "lib/net8.0/Microsoft.OpenApi.xml",
         "lib/netstandard2.0/Microsoft.OpenApi.dll",
         "lib/netstandard2.0/Microsoft.OpenApi.pdb",
         "lib/netstandard2.0/Microsoft.OpenApi.xml",
-        "microsoft.openapi.1.6.17.nupkg.sha512",
+        "microsoft.openapi.2.12.0.nupkg.sha512",
         "microsoft.openapi.nuspec"
       ]
     },
@@ -2357,20 +2365,22 @@
         "postgresql.png"
       ]
     },
-    "Scalar.AspNetCore/2.0.18": {
-      "sha512": "nS8Sw6wRO1A/dARn3q9R6znIBfddJcmAczI5uMROBGWkO2KG/ad/Ld+UeUePTxGr1+6humJSOxI7An+q4q3oGA==",
+    "Scalar.AspNetCore/2.17.13": {
+      "sha512": "+R0eJtJIIHW9owY61rIOgR2lywjZnjqUPAM7ll+lZYML7mZ4LxokG6wpAmkuyaLS1Ml4fI4kdAC2U6KkdrDDiA==",
       "type": "package",
-      "path": "scalar.aspnetcore/2.0.18",
+      "path": "scalar.aspnetcore/2.17.13",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
         "icon.png",
+        "lib/net10.0/Scalar.AspNetCore.dll",
+        "lib/net10.0/Scalar.AspNetCore.xml",
         "lib/net8.0/Scalar.AspNetCore.dll",
         "lib/net8.0/Scalar.AspNetCore.xml",
         "lib/net9.0/Scalar.AspNetCore.dll",
         "lib/net9.0/Scalar.AspNetCore.xml",
-        "scalar.aspnetcore.2.0.18.nupkg.sha512",
+        "scalar.aspnetcore.2.17.13.nupkg.sha512",
         "scalar.aspnetcore.nuspec"
       ]
     },
@@ -2600,30 +2610,38 @@
       "CulinaryBlog.Domain >= 1.0.0",
       "CulinaryBlog.Infrastructure >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 9.0.2",
-      "Microsoft.AspNetCore.OpenApi >= 9.0.2",
+      "Microsoft.AspNetCore.OpenApi >= 10.0.12",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.2",
-      "Scalar.AspNetCore >= 2.0.18"
+      "Scalar.AspNetCore >= 2.17.13"
     ]
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "C:\\Users\\Admin\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/app/applet/backend/src/CulinaryBlog.API/CulinaryBlog.API.csproj",
+      "projectUniqueName": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj",
       "projectName": "CulinaryBlog.API",
-      "projectPath": "/app/applet/backend/src/CulinaryBlog.API/CulinaryBlog.API.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/app/applet/backend/src/CulinaryBlog.API/obj/",
+      "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj",
+      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+      "outputPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2631,14 +2649,14 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/app/applet/backend/src/CulinaryBlog.Application/CulinaryBlog.Application.csproj": {
-              "projectPath": "/app/applet/backend/src/CulinaryBlog.Application/CulinaryBlog.Application.csproj"
+            "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj": {
+              "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj"
             },
-            "/app/applet/backend/src/CulinaryBlog.Domain/CulinaryBlog.Domain.csproj": {
-              "projectPath": "/app/applet/backend/src/CulinaryBlog.Domain/CulinaryBlog.Domain.csproj"
+            "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj": {
+              "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj"
             },
-            "/app/applet/backend/src/CulinaryBlog.Infrastructure/CulinaryBlog.Infrastructure.csproj": {
-              "projectPath": "/app/applet/backend/src/CulinaryBlog.Infrastructure/CulinaryBlog.Infrastructure.csproj"
+            "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj": {
+              "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj"
             }
           }
         }
@@ -2653,7 +2671,7 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.400"
+      "SdkAnalysisLevel": "10.0.300"
     },
     "frameworks": {
       "net10.0": {
@@ -2666,7 +2684,7 @@
           },
           "Microsoft.AspNetCore.OpenApi": {
             "target": "Package",
-            "version": "[9.0.2, )"
+            "version": "[10.0.12, )"
           },
           "Microsoft.EntityFrameworkCore.Design": {
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
@@ -2676,7 +2694,7 @@
           },
           "Scalar.AspNetCore": {
             "target": "Package",
-            "version": "[2.0.18, )"
+            "version": "[2.17.13, )"
           }
         },
         "imports": [
@@ -2698,7 +2716,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.401/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

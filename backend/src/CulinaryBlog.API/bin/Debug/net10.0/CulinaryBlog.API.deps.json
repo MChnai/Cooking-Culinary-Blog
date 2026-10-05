@@ -12,9 +12,9 @@
           "CulinaryBlog.Domain": "1.0.0",
           "CulinaryBlog.Infrastructure": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.2",
-          "Microsoft.AspNetCore.OpenApi": "9.0.2",
+          "Microsoft.AspNetCore.OpenApi": "10.0.12",
           "Microsoft.EntityFrameworkCore.Design": "9.0.2",
-          "Scalar.AspNetCore": "2.0.18"
+          "Scalar.AspNetCore": "2.17.13"
         },
         "runtime": {
           "CulinaryBlog.API.dll": {}
@@ -85,14 +85,14 @@
           }
         }
       },
-      "Microsoft.AspNetCore.OpenApi/9.0.2": {
+      "Microsoft.AspNetCore.OpenApi/10.0.12": {
         "dependencies": {
-          "Microsoft.OpenApi": "1.6.17"
+          "Microsoft.OpenApi": "2.12.0"
         },
         "runtime": {
-          "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll": {
-            "assemblyVersion": "9.0.2.0",
-            "fileVersion": "9.0.225.6704"
+          "lib/net10.0/Microsoft.AspNetCore.OpenApi.dll": {
+            "assemblyVersion": "10.0.12.0",
+            "fileVersion": "10.0.1226.42308"
           }
         }
       },
@@ -500,11 +500,11 @@
           }
         }
       },
-      "Microsoft.OpenApi/1.6.17": {
+      "Microsoft.OpenApi/2.12.0": {
         "runtime": {
-          "lib/netstandard2.0/Microsoft.OpenApi.dll": {
-            "assemblyVersion": "1.6.17.0",
-            "fileVersion": "1.6.17.0"
+          "lib/net8.0/Microsoft.OpenApi.dll": {
+            "assemblyVersion": "2.12.0.0",
+            "fileVersion": "2.12.0.0"
           }
         }
       },
@@ -540,11 +540,11 @@
           }
         }
       },
-      "Scalar.AspNetCore/2.0.18": {
+      "Scalar.AspNetCore/2.17.13": {
         "runtime": {
-          "lib/net9.0/Scalar.AspNetCore.dll": {
-            "assemblyVersion": "2.0.18.0",
-            "fileVersion": "2.0.18.0"
+          "lib/net10.0/Scalar.AspNetCore.dll": {
+            "assemblyVersion": "2.17.13.0",
+            "fileVersion": "2.17.13.0"
           }
         }
       },
@@ -725,12 +725,12 @@
       "path": "microsoft.aspnetcore.authentication.jwtbearer/9.0.2",
       "hashPath": "microsoft.aspnetcore.authentication.jwtbearer.9.0.2.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.OpenApi/9.0.2": {
+    "Microsoft.AspNetCore.OpenApi/10.0.12": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-JUndpjRNdG8GvzBLH/J4hen4ehWaPcshtiQ6+sUs1Bcj3a7dOsmWpDloDlpPeMOVSlhHwUJ3Xld0ClZjsFLgFQ==",
-      "path": "microsoft.aspnetcore.openapi/9.0.2",
-      "hashPath": "microsoft.aspnetcore.openapi.9.0.2.nupkg.sha512"
+      "sha512": "sha512-7RnQ/UKn+kK3JDLmTpW+vVqNErWthGPAVAy1aIiBzv4ucQ6g9NFvOJUuT0PHcpvcJxGVxctMxj6t+NESWMrgHQ==",
+      "path": "microsoft.aspnetcore.openapi/10.0.12",
+      "hashPath": "microsoft.aspnetcore.openapi.10.0.12.nupkg.sha512"
     },
     "Microsoft.Bcl.AsyncInterfaces/7.0.0": {
       "type": "package",
@@ -858,12 +858,12 @@
       "path": "microsoft.identitymodel.tokens/8.6.0",
       "hashPath": "microsoft.identitymodel.tokens.8.6.0.nupkg.sha512"
     },
-    "Microsoft.OpenApi/1.6.17": {
+    "Microsoft.OpenApi/2.12.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Le+kehlmrlQfuDFUt1zZ2dVwrhFQtKREdKBo+rexOwaCoYP0/qpgT9tLxCsZjsgR5Itk1UKPcbgO+FyaNid/bA==",
-      "path": "microsoft.openapi/1.6.17",
-      "hashPath": "microsoft.openapi.1.6.17.nupkg.sha512"
+      "sha512": "sha512-0xB/be+f6qYOhvQPUrVsLrau+fkowYv6gt9RIkajMhwT7sZnqtcA797yW3bS5kgSje+AQW4xZgyLnW641YFioQ==",
+      "path": "microsoft.openapi/2.12.0",
+      "hashPath": "microsoft.openapi.2.12.0.nupkg.sha512"
     },
     "Mono.TextTemplating/3.0.0": {
       "type": "package",
@@ -886,12 +886,12 @@
       "path": "npgsql.entityframeworkcore.postgresql/9.0.3",
       "hashPath": "npgsql.entityframeworkcore.postgresql.9.0.3.nupkg.sha512"
     },
-    "Scalar.AspNetCore/2.0.18": {
+    "Scalar.AspNetCore/2.17.13": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-nS8Sw6wRO1A/dARn3q9R6znIBfddJcmAczI5uMROBGWkO2KG/ad/Ld+UeUePTxGr1+6humJSOxI7An+q4q3oGA==",
-      "path": "scalar.aspnetcore/2.0.18",
-      "hashPath": "scalar.aspnetcore.2.0.18.nupkg.sha512"
+      "sha512": "sha512-+R0eJtJIIHW9owY61rIOgR2lywjZnjqUPAM7ll+lZYML7mZ4LxokG6wpAmkuyaLS1Ml4fI4kdAC2U6KkdrDDiA==",
+      "path": "scalar.aspnetcore/2.17.13",
+      "hashPath": "scalar.aspnetcore.2.17.13.nupkg.sha512"
     },
     "System.CodeDom/6.0.0": {
       "type": "package",
