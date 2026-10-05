@@ -93,7 +93,11 @@ CREATE TABLE IF NOT EXISTS recipes (
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     deleted_at TIMESTAMPTZ,
 
+<<<<<<< HEAD
+    -- PostgreSQL 16 Full-Text Search tsvector Column
+=======
     -- Full-Text Search Column
+>>>>>>> origin/2312805_TranNgocNhuY_FR-AUTH
     search_vector tsvector GENERATED ALWAYS AS (
         to_tsvector('simple', coalesce(title, '') || ' ' || coalesce(description, '') || ' ' || coalesce(instructions, ''))
     ) STORED

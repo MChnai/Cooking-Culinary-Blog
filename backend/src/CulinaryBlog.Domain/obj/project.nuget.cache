@@ -1,8 +1,14 @@
 {
   "version": 2,
+<<<<<<< HEAD
+  "dgSpecHash": "kOpx8oSUM1k=",
+  "success": true,
+  "projectFilePath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj",
+=======
   "dgSpecHash": "bSXpN1Lm+14=",
   "success": true,
   "projectFilePath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj",
+>>>>>>> origin/2312805_TranNgocNhuY_FR-AUTH
   "expectedPackageFiles": [],
   "logs": []
 }

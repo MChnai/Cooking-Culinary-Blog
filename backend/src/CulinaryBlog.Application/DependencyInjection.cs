@@ -16,6 +16,7 @@ public static class DependencyInjection
         {
             cfg.RegisterServicesFromAssembly(assembly);
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
 
         services.AddValidatorsFromAssembly(assembly);

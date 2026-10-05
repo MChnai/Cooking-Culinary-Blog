@@ -1,88 +1,45 @@
-using System.Text;
 using CulinaryBlog.API.Endpoints;
-using CulinaryBlog.API.Middleware;
+using Scalar.AspNetCore;
 using CulinaryBlog.Application;
 using CulinaryBlog.Infrastructure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Clean Architecture Layers Dependency Injection
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
-
-// 2. RFC 7807 Problem Details
-builder.Services.AddProblemDetails();
-
-// 3. OpenAPI 3.1 & Scalar Integration (.NET 10 Native OpenAPI)
+// 1. Đăng ký Dịch vụ OpenApi của ASP.NET Core
 builder.Services.AddOpenApi();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
-// 4. In-Memory Caching & Output Caching
-builder.Services.AddMemoryCache();
-
-// 5. JWT Authentication & Authorization
-var jwtKey = builder.Configuration["Jwt:SecretKey"] ?? "super-secret-key-that-is-at-least-32-chars-long-123456";
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "CulinaryBlog.API",
-            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "CulinaryBlog.Client",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-        };
-    });
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("AuthorOrAdmin", policy => policy.RequireRole("Admin", "Author"));
-});
-
-// 6. CORS for Frontend Client (Next.js / Vite)
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
+// 2. Đăng ký Dịch vụ Authentication & Authorization (Sửa lỗi tại đây)
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure Middleware Pipeline
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-
 if (app.Environment.IsDevelopment())
 {
-    // Native OpenAPI route: /openapi/v1.json
+    // Map endpoint OpenAPI (.json)
     app.MapOpenApi();
 
-    // Scalar Interactive API Reference UI: /scalar/v1
+    // Tích hợp giao diện Scalar
     app.MapScalarApiReference(options =>
     {
-        options.WithTitle("Culinary Blog .NET 10 Minimal APIs")
-               .WithTheme(ScalarTheme.Moon)
-               .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+        options.Title = "Culinary Blog API Document";
+        options.Theme = ScalarTheme.Purple;
     });
 }
 
-app.UseCors();
+// Lưu ý: Thứ tự Middleware rất quan trọng (Authentication trước, Authorization sau)
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map Minimal APIs Route Groups
-var apiV1 = app.MapGroup("/api/v1");
+// Map Auth Endpoints
+app.MapHealthCheckEndpoints();
+app.MapAuthEndpoints();
 
+<<<<<<< HEAD
+app.Run();
+=======
 apiV1.MapGroup("/recipes")
      .MapRecipeEndpoints()
      .WithTags("Recipes");
@@ -169,3 +126,4 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+>>>>>>> origin/2312805_TranNgocNhuY_FR-AUTH
