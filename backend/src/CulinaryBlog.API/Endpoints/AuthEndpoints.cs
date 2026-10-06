@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using CulinaryBlog.Application.Common.Models; 
 using CulinaryBlog.Application.Features.Auth.DTOs;
 using CulinaryBlog.Application.Features.Auth.Commands.RefreshToken;
-using CulinaryBlog.Application.Features.Auth.Commands.Logout;
 
 namespace CulinaryBlog.API.Endpoints;
 
@@ -158,35 +157,5 @@ public static class AuthEndpoints
         .WithName("RefreshToken")
         .Produces<Result<AuthResponseDto>>(StatusCodes.Status200OK)
         .Produces<Result<AuthResponseDto>>(StatusCodes.Status401Unauthorized);
-
-        // FR-AUTH-005: Đăng xuất (Logout)
-        group.MapPost("/logout", async (
-            [FromBody] LogoutRequest request,
-            HttpContext httpContext,
-            ISender mediator,
-            CancellationToken cancellationToken) =>
-        {
-            var ipAddress = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
-                            ?? httpContext.Connection.RemoteIpAddress?.ToString()
-                            ?? "127.0.0.1";
-
-            var command = new LogoutCommand(request.RefreshToken, ipAddress);
-            var result = await mediator.Send(command, cancellationToken);
-
-            if (!result.IsSuccess)
-            {
-                return Results.BadRequest(result);
-            }
-
-            return Results.Ok(result);
-        })
-        .WithName("Logout")
-        .WithSummary("Đăng xuất tài khoản")
-        .WithDescription("Đánh dấu IsRevoked = true cho Refresh Token gửi lên. Phía Client cần chủ động xóa Access Token/Refresh Token khỏi bộ nhớ.")
-        .Produces<Result<bool>>(StatusCodes.Status200OK)
-        .Produces<Result<bool>>(StatusCodes.Status400BadRequest);
-    }
-}
-
     }
 }
