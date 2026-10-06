@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "7ETq7dgKRn0=",
+  "dgSpecHash": "feXZ+ioe9WE=",
   "success": true,
-  "projectFilePath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj",
+  "projectFilePath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\bogus\\35.6.2\\bogus.35.6.2.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\efcore.namingconventions\\9.0.0\\efcore.namingconventions.9.0.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.11.0\\fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

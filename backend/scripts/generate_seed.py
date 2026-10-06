@@ -331,7 +331,7 @@ def main():
         )
 
     # Write out 02_seed_data.sql
-    with open("02_seed_data.sql", "w", encoding="utf-8") as f:
+    with open("backend/scripts/02_seed_data.sql", "w", encoding="utf-8") as f:
         f.write("-- ==============================================================================\n")
         f.write("-- CULINARY BLOG & RECIPE MANAGEMENT - SEED DATA FOR POSTGRESQL 16 DOCKER\n")
         f.write(f"-- Categories: {len(CATEGORIES)} (>= 20 required)\n")
