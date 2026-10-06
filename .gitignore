@@ -1,18 +1,28 @@
-# .NET Build outputs
-bin/
-obj/
+# .NET Build Results
+[Bb]in/
+[Oo]bj/
+[Ll]ogs/
+[Uu]serFiles/
+
+# Build output folders
+**/bin/
+**/obj/
+
+# Visual Studio cache/options
+.vs/
+*.suo
 *.user
 *.userosscache
 *.sln.docstates
 
-# Python Cache
-__pycache__/
-*.py[cod]
+# NuGet
+**/project.lock.json
+**/project.fragment.lock.json
+./artifacts/
 
-# IDE
-.vs/
-.vscode/
-.idea/
-
-backend/src/*/bin/
-backend/src/*/obj/
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
