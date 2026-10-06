@@ -13,3 +13,6 @@ __pycache__/
 .vs/
 .vscode/
 .idea/
+
+backend/src/*/bin/
+backend/src/*/obj/
