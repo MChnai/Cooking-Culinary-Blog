@@ -10,6 +10,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();
+builder.Services.AddMemoryCache();
 
 // 2. Đăng ký Dịch vụ Authentication & Authorization
 builder.Services.AddAuthentication();
@@ -39,5 +40,6 @@ app.UseAuthorization();
 // 5. Map Endpoints
 app.MapAuthEndpoints();        // Map các API Authentication (/api/auth/...)
 app.MapHealthCheckEndpoints(); // Map các API Health Check (/api/health/...)
+app.MapCategoryEndpoints();
 
 app.Run();
