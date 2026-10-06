@@ -1,5 +1,6 @@
 -- ==============================================================================
 -- CULINARY BLOG & RECIPE MANAGEMENT - POSTGRESQL 16 PRODUCTION SCHEMA
+-- Conforms to IEEE 830 SRS Specification, EF Core 10, tsvector FTS & unaccent
 -- ==============================================================================
 
 -- 1. Enable Required Extensions
@@ -27,7 +28,7 @@ CREATE TABLE IF NOT EXISTS users (
     deleted_at TIMESTAMPTZ
 );
 
--- 2b. Refresh Tokens Table
+-- 2b. Refresh Tokens Table (FR-AUTH-001 / FR-AUTH-004 Token Rotation)
 CREATE TABLE IF NOT EXISTS refresh_tokens (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -79,7 +80,7 @@ CREATE TABLE IF NOT EXISTS recipes (
     category_id UUID NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
     author_id UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
     
-    -- Nutrition Values
+    -- Owned Nutrition Value Object
     calories INT NOT NULL DEFAULT 0,
     protein NUMERIC(6,2) NOT NULL DEFAULT 0.00,
     carbohydrates NUMERIC(6,2) NOT NULL DEFAULT 0.00,
@@ -93,11 +94,10 @@ CREATE TABLE IF NOT EXISTS recipes (
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     deleted_at TIMESTAMPTZ,
 
-<<<<<<< HEAD
+    -- PostgreSQL Concurrency Token (RowVersion xmin)
+    xmin xid,
+
     -- PostgreSQL 16 Full-Text Search tsvector Column
-=======
-    -- Full-Text Search Column
->>>>>>> origin/2312805_TranNgocNhuY_FR-AUTH
     search_vector tsvector GENERATED ALWAYS AS (
         to_tsvector('simple', coalesce(title, '') || ' ' || coalesce(description, '') || ' ' || coalesce(instructions, ''))
     ) STORED
@@ -157,7 +157,7 @@ CREATE INDEX IF NOT EXISTS idx_recipes_published_at ON recipes (published_at DES
 CREATE INDEX IF NOT EXISTS idx_recipe_ingredients_recipe_id ON recipe_ingredients (recipe_id);
 CREATE INDEX IF NOT EXISTS idx_recipe_steps_recipe_id ON recipe_steps (recipe_id);
 
--- 9. Seed Data
+-- 9. Seed Initial Admin & Categories
 INSERT INTO users (id, username, email, password_hash, full_name, role)
 VALUES 
 ('11111111-1111-1111-1111-111111111111', 'culinary_admin', 'admin@culinaryblog.com', 'AQAAAAEAACcQAAAAEHASH123456789', 'Executive Chef Admin', 'Admin')

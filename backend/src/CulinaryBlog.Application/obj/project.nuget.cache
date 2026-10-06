@@ -1,14 +1,8 @@
 {
   "version": 2,
-<<<<<<< HEAD
   "dgSpecHash": "EXidMZmMpbw=",
   "success": true,
   "projectFilePath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj",
-=======
-  "dgSpecHash": "GIiuPslEzVE=",
-  "success": true,
-  "projectFilePath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj",
->>>>>>> origin/2312805_TranNgocNhuY_FR-AUTH
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.11.0\\fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512",

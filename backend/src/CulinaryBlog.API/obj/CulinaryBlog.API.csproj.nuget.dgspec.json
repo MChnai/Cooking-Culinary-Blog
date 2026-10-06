@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj": {}
+    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj": {}
   },
   "projects": {
-    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj": {
+    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj",
+        "projectUniqueName": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj",
         "projectName": "CulinaryBlog.API",
-        "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj",
+        "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\CulinaryBlog.API.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\obj\\",
+        "outputPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -34,14 +34,14 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj": {
-                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj"
+              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj": {
+                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj"
               },
-              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj": {
-                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj"
+              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj": {
+                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj"
               },
-              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj": {
-                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj"
+              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj": {
+                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj"
               }
             }
           }
@@ -519,14 +519,14 @@
         }
       }
     },
-    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj": {
+    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj",
+        "projectUniqueName": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj",
         "projectName": "CulinaryBlog.Application",
-        "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj",
+        "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\obj\\",
+        "outputPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -549,8 +549,8 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj": {
-                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj"
+              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj": {
+                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj"
               }
             }
           }
@@ -883,14 +883,14 @@
         }
       }
     },
-    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj": {
+    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj",
+        "projectUniqueName": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj",
         "projectName": "CulinaryBlog.Domain",
-        "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj",
+        "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\obj\\",
+        "outputPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1225,14 +1225,14 @@
         }
       }
     },
-    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj": {
+    "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj",
+        "projectUniqueName": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj",
         "projectName": "CulinaryBlog.Infrastructure",
-        "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj",
+        "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\CulinaryBlog.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\obj\\",
+        "outputPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1255,11 +1255,11 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj": {
-                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj"
+              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj": {
+                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Application\\CulinaryBlog.Application.csproj"
               },
-              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj": {
-                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\CulinaryBlog\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj"
+              "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj": {
+                "projectPath": "G:\\STUDY\\HKI_3Year\\PTUDGNC\\Culinary_Blog_Main\\Culinary-Blog-Website-Development-Advance\\backend\\src\\CulinaryBlog.Domain\\CulinaryBlog.Domain.csproj"
               }
             }
           }
