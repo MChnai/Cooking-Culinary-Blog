@@ -2,7 +2,7 @@ using CulinaryBlog.Domain.Common;
 
 namespace CulinaryBlog.Domain.Entities;
 
-public class RefreshToken : BaseEntity
+public class RefreshToken : CulinaryBlog.Domain.Common.BaseEntity
 {
     public Guid UserId { get; set; }
     public ApplicationUser User { get; set; } = null!;
