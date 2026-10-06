@@ -12,6 +12,7 @@ public class ApplicationUser : BaseEntity
     public string? AvatarUrl { get; set; }
     public string? Bio { get; set; }
     public bool EmailConfirmed { get; set; } = true;
+    public uint RowVersion { get; set; }
 
     // Lockout & Security
     public int AccessFailedCount { get; set; } = 0;
@@ -23,6 +24,7 @@ public class ApplicationUser : BaseEntity
 
     public ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    public virtual ICollection<UserLogin> UserLogins { get; set; } = new List<UserLogin>();
 
     public static ApplicationUser Create(string fullName, string email, string username, string role = "Author")
     {

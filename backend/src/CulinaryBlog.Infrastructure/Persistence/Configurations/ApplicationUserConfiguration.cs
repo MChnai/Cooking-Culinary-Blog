@@ -24,11 +24,18 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
         builder.Property(u => u.LockoutEnd).HasColumnName("lockout_end");
         builder.Property(u => u.LockoutEnabled).HasColumnName("lockout_enabled").HasDefaultValue(true);
         builder.Property(u => u.GoogleProviderKey).HasColumnName("google_provider_key").HasMaxLength(255);
+        builder.Property(u => u.RowVersion).HasColumnName("row_version");
 
         builder.Property(u => u.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
         builder.Property(u => u.UpdatedAt).HasColumnName("updated_at");
         builder.Property(u => u.IsDeleted).HasColumnName("is_deleted").HasDefaultValue(false);
         builder.Property(u => u.DeletedAt).HasColumnName("deleted_at");
+
+        builder.Property(u => u.RowVersion)
+            .HasColumnName("xmin")
+            .HasColumnType("xid")
+            .ValueGeneratedOnAddOrUpdate()
+            .IsRowVersion();
 
         builder.HasIndex(u => u.Username).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();

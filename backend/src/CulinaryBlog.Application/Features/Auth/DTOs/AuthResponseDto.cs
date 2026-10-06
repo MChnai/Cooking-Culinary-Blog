@@ -6,3 +6,4 @@ public record AuthResponseDto(
     DateTime ExpiresAt,
     UserDto User
 );
+

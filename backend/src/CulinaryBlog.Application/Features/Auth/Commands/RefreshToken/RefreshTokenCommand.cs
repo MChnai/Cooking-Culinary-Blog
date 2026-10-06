@@ -8,7 +8,8 @@ using Microsoft.Extensions.Logging;
 
 namespace CulinaryBlog.Application.Features.Auth.Commands.RefreshToken;
 
-public record RefreshTokenCommand(string RefreshToken) : IRequest<Result<AuthResponseDto>>;
+// 🟢 Cập nhật record nhận thêm IpAddress
+public record RefreshTokenCommand(string RefreshToken, string? IpAddress = null) : IRequest<Result<AuthResponseDto>>;
 
 public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, Result<AuthResponseDto>>
 {
@@ -33,7 +34,9 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, R
             return Result<AuthResponseDto>.Failure("INVALID_TOKEN", "Refresh token cannot be empty.");
         }
 
-        // 3. Find refresh token in database including User
+        var clientIp = string.IsNullOrWhiteSpace(request.IpAddress) ? "127.0.0.1" : request.IpAddress;
+
+        // 1. Find refresh token in database including User
         var token = await _context.RefreshTokens
             .Include(rt => rt.User)
             .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken.Trim(), cancellationToken);
@@ -48,17 +51,20 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, R
         if (token.IsRevoked)
         {
             _logger.LogWarning(
-                "[SECURITY ALERT] Refresh token reuse detected for User {UserId}! Revoking all descendant tokens for security.",
-                token.UserId);
+                "[SECURITY ALERT] Refresh token reuse detected for User {UserId} from IP {Ip}! Revoking all descendant tokens.",
+                token.UserId, clientIp);
 
-            // Paranoid mode: Invalidate all active tokens for this user
             var activeTokens = await _context.RefreshTokens
                 .Where(rt => rt.UserId == token.UserId && !rt.IsRevoked)
                 .ToListAsync(cancellationToken);
 
             foreach (var activeToken in activeTokens)
             {
-                activeToken.Revoke("127.0.0.1", "SECURITY_ALERT_REUSE_DETECTED");
+                // Dùng Named Arguments để đảm bảo "SECURITY_ALERT_REUSE_DETECTED" gán đúng vào 'reason'
+                activeToken.Revoke(
+                    ipAddress: clientIp, 
+                    reason: "SECURITY_ALERT_REUSE_DETECTED"
+                );
             }
 
             await _context.SaveChangesAsync(cancellationToken);
@@ -80,9 +86,13 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, R
             return Result<AuthResponseDto>.Failure("USER_INACTIVE", "Associated user account is no longer active.");
         }
 
-        // 5. Token Rotation: Mark old token revoked and record replacement
+        // 5. Token Rotation
         var newRefreshTokenString = _jwtService.GenerateRefreshToken();
-        token.Revoke("127.0.0.1", newRefreshTokenString);
+        token.Revoke(
+            ipAddress: clientIp, 
+            replacedByToken: newRefreshTokenString, 
+            reason: "Token rotation"
+        );
 
         // 6. Generate new access token
         var roles = new List<string> { token.User.Role };
@@ -93,10 +103,9 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, R
         var newRefreshToken = new Domain.Entities.RefreshToken
         {
             UserId = token.UserId,
-            User = token.User,
             Token = newRefreshTokenString,
             ExpiresAt = DateTime.UtcNow.AddDays(7),
-            CreatedByIp = "127.0.0.1",
+            CreatedByIp = clientIp,
             CreatedAt = DateTime.UtcNow
         };
 
