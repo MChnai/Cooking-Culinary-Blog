@@ -1,14 +1,13 @@
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.DTOs.Auth;
-using CulinaryBlog.Domain.Entities; // Chứa ApplicationUser
+using CulinaryBlog.Application.Features.Auth.Commands.Login;
+using CulinaryBlog.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using CulinaryBlog.Application.Features.Auth.Commands.Login;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-
 
 namespace CulinaryBlog.API.Endpoints;
 
@@ -22,19 +21,24 @@ public static class AuthEndpoints
         // POST: Register
         group.MapPost("/register", async (RegisterRequest request, IApplicationDbContext dbContext, IPasswordHasher passwordHasher) =>
         {
-            var existingUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            var normalizedEmail = request.Email.Trim().ToLowerInvariant();
+            
+            var existingUser = await dbContext.Users
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == normalizedEmail || u.Username == request.Username);
+                
             if (existingUser != null)
             {
-                return Results.BadRequest(new { Message = "Email đã được sử dụng." });
+                return Results.BadRequest(new { Message = "Email hoặc Username đã được sử dụng." });
             }
 
-            // SỬA TẠI ĐÂY: Dùng ApplicationUser thay vì User
             var user = new ApplicationUser
             {
                 Id = Guid.NewGuid(),
                 Username = request.Username,
                 Email = request.Email,
+                FullName = request.Username,
                 PasswordHash = passwordHasher.HashPassword(request.Password),
+                Role = "Author", 
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -46,7 +50,9 @@ public static class AuthEndpoints
                 Message = "Đăng ký thành công!", 
                 UserId = user.Id,
                 user.Username,
-                user.Email 
+                user.Email,
+                user.FullName,
+                user.Role
             });
         })
         .WithSummary("Đăng ký tài khoản mới (POST)");
@@ -56,11 +62,13 @@ public static class AuthEndpoints
         {
             var users = await dbContext.Users
                 .AsNoTracking()
+                .Where(u => !u.IsDeleted)
                 .Select(u => new 
                 {
                     u.Id,
                     u.Username,
                     u.Email,
+                    u.FullName,
                     u.Role,
                     u.CreatedAt
                 })
@@ -75,13 +83,16 @@ public static class AuthEndpoints
         {
             var user = await dbContext.Users
                 .AsNoTracking()
-                .Where(u => u.Id == id)
+                .Where(u => u.Id == id && !u.IsDeleted)
                 .Select(u => new 
                 {
                     u.Id,
                     u.Username,
                     u.Email,
+                    u.FullName,
                     u.Role,
+                    u.AvatarUrl,
+                    u.Bio,
                     u.CreatedAt
                 })
                 .FirstOrDefaultAsync();

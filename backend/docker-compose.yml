@@ -5,7 +5,7 @@ services:
     container_name: culinaryblog-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: culinaryblog_db
+      POSTGRES_DB: culinaryblog
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
