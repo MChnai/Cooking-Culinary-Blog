@@ -1,3 +1,12 @@
+G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.csproj.AssemblyReference.cache
+G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\rpswa.dswa.cache.json
+G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.GeneratedMSBuildEditorConfig.editorconfig
+G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.AssemblyInfoInputs.cache
+G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.AssemblyInfo.cs
+G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.csproj.CoreCompileInputs.cache
+G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.MvcApplicationPartsAssemblyInfo.cs
+G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.MvcApplicationPartsAssemblyInfo.cache
+G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.sourcelink.json
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\appsettings.Development.json
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\appsettings.json
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\CulinaryBlog.API.staticwebassets.endpoints.json
@@ -7,7 +16,6 @@ G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\CulinaryBlog.API.dll
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\CulinaryBlog.API.pdb
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\Bogus.dll
-G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\EFCore.NamingConventions.dll
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\FluentValidation.dll
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\Humanizer.dll
@@ -117,15 +125,6 @@ G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\CulinaryBlog.Domain.pdb
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\CulinaryBlog.Application.pdb
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\bin\Debug\net10.0\CulinaryBlog.Infrastructure.pdb
-G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.csproj.AssemblyReference.cache
-G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\rpswa.dswa.cache.json
-G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.GeneratedMSBuildEditorConfig.editorconfig
-G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.AssemblyInfoInputs.cache
-G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.AssemblyInfo.cs
-G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.csproj.CoreCompileInputs.cache
-G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.MvcApplicationPartsAssemblyInfo.cs
-G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.MvcApplicationPartsAssemblyInfo.cache
-G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\CulinaryBlog.API.sourcelink.json
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\rjimswa.dswa.cache.json
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
 G:\STUDY\HKI_3Year\PTUDGNC\Culinary_Blog_Main\Culinary-Blog-Website-Development-Advance\backend\src\CulinaryBlog.API\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json

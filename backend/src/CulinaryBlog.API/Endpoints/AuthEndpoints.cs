@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using CulinaryBlog.Application.Common.Models; 
+using CulinaryBlog.Application.Features.Auth.DTOs;
+using CulinaryBlog.Application.Features.Auth.Commands.RefreshToken;
 
 namespace CulinaryBlog.API.Endpoints;
 
@@ -127,5 +130,32 @@ public static class AuthEndpoints
         })
         .WithName("Login")
         .AllowAnonymous();
+
+        // FR-AUTH-004: Refresh Access Token
+        group.MapPost("/refresh-token", async (
+            [FromBody] RefreshTokenRequest request,
+            HttpContext httpContext,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            // Lấy IP thật của client (xử lý trường hợp chạy sau Reverse Proxy như Nginx/Cloudflare)
+            var ipAddress = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+                            ?? httpContext.Connection.RemoteIpAddress?.ToString()
+                            ?? "127.0.0.1";
+
+            var command = new RefreshTokenCommand(request.RefreshToken, ipAddress);
+            var result = await mediator.Send(command, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                // Trả về 401 Unauthorized nếu token invalid/expired hoặc dính Reuse Attack
+                return Results.Json(result, statusCode: StatusCodes.Status401Unauthorized);
+            }
+
+            return Results.Ok(result);
+        })
+        .WithName("RefreshToken")
+        .Produces<Result<AuthResponseDto>>(StatusCodes.Status200OK)
+        .Produces<Result<AuthResponseDto>>(StatusCodes.Status401Unauthorized);
     }
 }
