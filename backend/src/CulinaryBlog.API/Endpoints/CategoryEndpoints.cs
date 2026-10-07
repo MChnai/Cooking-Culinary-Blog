@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using CulinaryBlog.Application.Features.Categories.Queries.GetCategoryBySlug;
 using Microsoft.AspNetCore.Http;
 using CulinaryBlog.Application.Features.Categories.Commands.CreateCategory;
+using CulinaryBlog.Application.Features.Categories.Commands.DeleteCategory;
 using CulinaryBlog.Application.Features.Categories.Commands.UpdateCategory;
 
 namespace CulinaryBlog.API.Endpoints;
@@ -112,5 +113,29 @@ public static class CategoryEndpoints
 
             return Results.Ok(result);
         });
+        // FR-CAT-005: Xóa Danh mục [Admin]
+        group.MapDelete("/{id:guid}", async (
+            Guid id,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var command = new DeleteCategoryCommand(id);
+            var result = await mediator.Send(command, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+
+            return Results.Ok(result);
+        })
+        .WithName("DeleteCategory")
+        .WithSummary("Xóa danh mục (Admin)")
+        .WithDescription("Xóa danh mục khỏi hệ thống. Điều kiện: Danh mục không còn chứa công thức nào.")
+        .RequireAuthorization(policy => policy.RequireRole("Admin"))
+        .Produces<Result<bool>>(StatusCodes.Status200OK)
+        .Produces<Result<bool>>(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
     }
 }
