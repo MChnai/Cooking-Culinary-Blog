@@ -3,6 +3,7 @@ using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Recipes.Commands.CreateRecipe;
 using CulinaryBlog.Application.Features.Recipes.DTOs;
 using CulinaryBlog.Application.Features.Recipes.Queries.GetRecipes;
+using CulinaryBlog.Application.Features.Recipes.Commands.ChangeRecipeStatus;
 using CulinaryBlog.Application.Features.Recipes.Commands.UpdateRecipe;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -82,6 +83,10 @@ public static class RecipeEndpoints
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status403Forbidden);
 
+        // FR-RCP-005: Xuất bản / Hủy Xuất bản Công thức (Author, Admin)
+        group.MapPatch("/{id:guid}/status", async (
+            Guid id,
+            [FromBody] ChangeRecipeStatusRequest request,
        // FR-RCP-004: Cập nhật Công thức (Author, Admin)
         group.MapPut("/{id:guid}", async (
             Guid id,
@@ -91,6 +96,10 @@ public static class RecipeEndpoints
             ISender mediator,
             CancellationToken cancellationToken) =>
         {
+            var command = new ChangeRecipeStatusCommand
+            {
+                Id = id,
+                Status = request.Status,
             // 1. Kiểm tra ETag / If-Match header
             if (string.IsNullOrWhiteSpace(ifMatch))
             {
@@ -128,6 +137,9 @@ public static class RecipeEndpoints
 
             return Results.NoContent();
         })
+        .WithName("ChangeRecipeStatus")
+        .WithSummary("Xuất bản hoặc Hủy xuất bản công thức (Draft / Published)")
+        .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Quy tắc: Công thức phải có ít nhất 1 bước thực hiện mới được phép Xuất bản (Published).")
         .WithName("UpdateRecipe")
         .WithSummary("Cập nhật thông tin công thức")
         .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Bắt buộc truyền `If-Match` header chứa RowVersion (uint) để kiểm soát Concurrency Control.")
@@ -136,6 +148,7 @@ public static class RecipeEndpoints
         .Produces<Result<Unit>>(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status412PreconditionFailed);
     }
