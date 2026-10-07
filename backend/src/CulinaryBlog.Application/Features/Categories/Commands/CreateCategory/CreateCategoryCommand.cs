@@ -1,52 +1,73 @@
-using System.Text.RegularExpressions;
+using CulinaryBlog.Application.Common.Helpers;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace CulinaryBlog.Application.Features.Categories.Commands.CreateCategory;
 
-public record CreateCategoryCommand(string Name, string? Description, string? ImageUrl) : IRequest<Result<Guid>>;
+public record CreateCategoryCommand(
+    string Name,
+    string? Description
+) : IRequest<Result<Guid>>;
 
 public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<Guid>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMemoryCache _cache;
+    private readonly ILogger<CreateCategoryCommandHandler> _logger;
 
-    public CreateCategoryCommandHandler(IApplicationDbContext context)
+    private const string CategoriesCacheKey = "Categories_List_With_RecipeCount";
+
+    public CreateCategoryCommandHandler(
+        IApplicationDbContext context,
+        IMemoryCache cache,
+        ILogger<CreateCategoryCommandHandler> logger)
     {
         _context = context;
+        _cache = cache;
+        _logger = logger;
     }
 
     public async Task<Result<Guid>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var slug = GenerateSlug(request.Name);
-        var existing = await _context.Categories.AnyAsync(c => c.Slug == slug, cancellationToken);
-        if (existing)
+        if (string.IsNullOrWhiteSpace(request.Name))
         {
-            return Result<Guid>.Failure("CATEGORY_EXISTS", $"Category with slug '{slug}' already exists.");
+            return Result<Guid>.Failure("INVALID_NAME", "Category name is required.");
         }
 
+        // 1. Tạo Slug cơ bản từ Name
+        var baseSlug = SlugHelper.GenerateSlug(request.Name);
+        var slug = baseSlug;
+        var counter = 1;
+
+        // 2. Tự động sinh Unique Slug nếu bị trùng
+        while (await _context.Categories.AnyAsync(c => c.Slug == slug && !c.IsDeleted, cancellationToken))
+        {
+            slug = $"{baseSlug}-{counter}";
+            counter++;
+        }
+
+        // 3. Tạo Entity mới
         var category = new Category
         {
+            Id = Guid.NewGuid(),
             Name = request.Name.Trim(),
             Slug = slug,
             Description = request.Description?.Trim(),
-            ImageUrl = request.ImageUrl?.Trim()
+            CreatedAt = DateTime.UtcNow
         };
 
         _context.Categories.Add(category);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return Result<Guid>.Success(category.Id);
-    }
+        // 4. Invalidate Cache danh sách danh mục (FR-CAT-001)
+        _cache.Remove(CategoriesCacheKey);
+        _logger.LogInformation("Invalidated cache key: {CacheKey} after creating new category.", CategoriesCacheKey);
 
-    private static string GenerateSlug(string phrase)
-    {
-        string str = phrase.ToLowerInvariant();
-        str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
-        str = Regex.Replace(str, @"\s+", " ").Trim();
-        str = Regex.Replace(str, @"\s", "-");
-        return str;
+        return Result<Guid>.Success(category.Id);
     }
 }

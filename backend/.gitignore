@@ -4,6 +4,10 @@
 [Ll]ogs/
 [Uu]serFiles/
 
+# Build output folders
+**/bin/
+**/obj/
+
 # Visual Studio cache/options
 .vs/
 *.suo
@@ -15,3 +19,10 @@
 **/project.lock.json
 **/project.fragment.lock.json
 ./artifacts/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
