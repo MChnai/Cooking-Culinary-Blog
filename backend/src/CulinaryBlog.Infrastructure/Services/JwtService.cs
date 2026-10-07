@@ -20,7 +20,8 @@ public class JwtService : IJwtService
 
     public string GenerateAccessToken(ApplicationUser user, IEnumerable<string> roles)
     {
-        var secretKey = _config["Jwt:SecretKey"] ?? "super-secret-key-that-is-at-least-32-chars-long-123456";
+        // 1. Lấy secret key (Đảm bảokey này giống key trong Program.cs)
+        var secretKey = _config["Jwt:Key"] ?? _config["Jwt:SecretKey"]!;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -37,22 +38,30 @@ public class JwtService : IJwtService
             claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
-        var expires = GetAccessTokenExpiration();
+        // 2. Tạo Header ép buộc gán "kid" (Key ID)
+        var header = new JwtHeader(creds)
+        {
+            ["kid"] = "CulinaryBlogSecretKeyId" // <-- QUAN TRỌNG: Gán trực tiếp "kid" vào dictionary Header
+        };
 
-        var token = new JwtSecurityToken(
+        // 3. Tạo Payload
+        var payload = new JwtPayload(
             issuer: _config["Jwt:Issuer"] ?? "CulinaryBlog.API",
             audience: _config["Jwt:Audience"] ?? "CulinaryBlog.Client",
             claims: claims,
-            expires: expires,
-            signingCredentials: creds
+            notBefore: null,
+            expires: GetAccessTokenExpiration()
         );
+
+        // 4. Tạo JwtSecurityToken từ Header và Payload
+        var token = new JwtSecurityToken(header, payload);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
     public string GenerateRefreshToken()
     {
-        var randomNumber = new byte[64]; // 512-bit secure random token
+        var randomNumber = new byte[64];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
         return Convert.ToBase64String(randomNumber);
