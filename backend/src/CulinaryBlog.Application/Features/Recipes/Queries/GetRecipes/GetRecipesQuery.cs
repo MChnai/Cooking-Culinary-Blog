@@ -7,19 +7,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CulinaryBlog.Application.Features.Recipes.Queries.GetRecipes;
 
-public record GetRecipesQuery : IRequest<PaginatedList<RecipeDto>>
-{
-    public string? Search { get; init; }
-    public string? CategorySlug { get; init; }
-    public RecipeDifficulty? Difficulty { get; init; }
-    public int? MaxCookTimeMinutes { get; init; }
-    public RecipeStatus? Status { get; init; } = RecipeStatus.Published;
-    public string? SortBy { get; init; } = "newest";
-    public int PageNumber { get; init; } = 1;
-    public int PageSize { get; init; } = 12;
-}
+public record GetRecipesQuery(
+    int PageNumber = 1,
+    int PageSize = 10,
+    Guid? CategoryId = null,
+    int? Difficulty = null,
+    int? MaxTotalTime = null,
+    string? SearchTerm = null,
+    string? SortBy = "createdAt",
+    string? SortDirection = "desc"
+) : IRequest<Result<PaginatedList<RecipeDto>>>;
 
-public class GetRecipesQueryHandler : IRequestHandler<GetRecipesQuery, PaginatedList<RecipeDto>>
+public class GetRecipesQueryHandler : IRequestHandler<GetRecipesQuery, Result<PaginatedList<RecipeDto>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -28,81 +27,79 @@ public class GetRecipesQueryHandler : IRequestHandler<GetRecipesQuery, Paginated
         _context = context;
     }
 
-    public async Task<PaginatedList<RecipeDto>> Handle(GetRecipesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedList<RecipeDto>>> Handle(GetRecipesQuery request, CancellationToken cancellationToken)
     {
+        // 1. Chỉ lấy các bài viết đã Published và chưa bị xóa (!IsDeleted)
         var query = _context.Recipes
             .AsNoTracking()
-            .Where(r => !r.IsDeleted);
+            .Where(r => !r.IsDeleted && r.Status == RecipeStatus.Published);
 
-        if (request.Status.HasValue)
+        // 2. Bộ lọc (Filtering)
+        if (request.CategoryId.HasValue)
         {
-            query = query.Where(r => r.Status == request.Status.Value);
-        }
-
-        if (!string.IsNullOrWhiteSpace(request.CategorySlug))
-        {
-            query = query.Where(r => r.Category != null && r.Category.Slug == request.CategorySlug);
+            query = query.Where(r => r.CategoryId == request.CategoryId.Value);
         }
 
         if (request.Difficulty.HasValue)
         {
-            query = query.Where(r => r.Difficulty == request.Difficulty.Value);
+            query = query.Where(r => (int)r.Difficulty == request.Difficulty.Value);
         }
 
-        if (request.MaxCookTimeMinutes.HasValue && request.MaxCookTimeMinutes.Value > 0)
+        if (request.MaxTotalTime.HasValue)
         {
-            query = query.Where(r => r.CookTimeMinutes <= request.MaxCookTimeMinutes.Value);
+            query = query.Where(r => (r.PrepTimeMinutes + r.CookTimeMinutes) <= request.MaxTotalTime.Value);
         }
 
-        if (!string.IsNullOrWhiteSpace(request.Search))
+        if (!string.IsNullOrWhiteSpace(request.SearchTerm))
         {
-            var term = request.Search.Trim().ToLower();
-            query = query.Where(r => r.Title.ToLower().Contains(term) || 
-                                     (r.Description != null && r.Description.ToLower().Contains(term)));
+            var term = request.SearchTerm.Trim().ToLower();
+            query = query.Where(r => r.Title.ToLower().Contains(term));
         }
+
+        // 3. Sắp xếp (Sorting)
+        var isAscending = string.Equals(request.SortDirection, "asc", StringComparison.OrdinalIgnoreCase);
 
         query = request.SortBy?.ToLower() switch
         {
-            "oldest" => query.OrderBy(r => r.CreatedAt),
-            "cook_time_asc" => query.OrderBy(r => r.CookTimeMinutes),
-            "cook_time_desc" => query.OrderByDescending(r => r.CookTimeMinutes),
-            "title_asc" => query.OrderBy(r => r.Title),
-            "title_desc" => query.OrderByDescending(r => r.Title),
-            "views" => query.OrderByDescending(r => r.ViewCount),
-            _ => query.OrderByDescending(r => r.PublishedAt ?? r.CreatedAt)
+            "views" => isAscending ? query.OrderBy(r => r.ViewCount) : query.OrderByDescending(r => r.ViewCount),
+            "rating" => isAscending ? query.OrderBy(r => r.RatingAverage) : query.OrderByDescending(r => r.RatingAverage),
+            "totaltime" => isAscending 
+                ? query.OrderBy(r => r.PrepTimeMinutes + r.CookTimeMinutes) 
+                : query.OrderByDescending(r => r.PrepTimeMinutes + r.CookTimeMinutes),
+            _ => isAscending ? query.OrderBy(r => r.CreatedAt) : query.OrderByDescending(r => r.CreatedAt)
         };
 
-        var totalCount = await query.CountAsync(cancellationToken);
+        // 4. Projection sang RecipeDto
+        var dtoQuery = query.Select(r => new RecipeDto
+        {
+            Id = r.Id,
+            Title = r.Title,
+            Slug = r.Slug,
+            Summary = r.Description,
+            // Lấy ảnh IsPrimary, nếu không có thì lấy ảnh đầu tiên trong danh sách Images
+            CoverImage = r.Images.Where(img => img.IsPrimary)
+                            .Select(img => img.OriginalUrl)
+                            .FirstOrDefault() 
+                         ?? r.Images.Select(img => img.OriginalUrl).FirstOrDefault(),
+            PrepTimeMinutes = r.PrepTimeMinutes,
+            CookTimeMinutes = r.CookTimeMinutes,
+            Difficulty = (int)r.Difficulty,
+            ViewCount = r.ViewCount,
+            AverageRating = (double)r.RatingAverage,
+            CategoryId = r.CategoryId,
+            CategoryName = r.Category != null ? r.Category.Name : string.Empty,
+            PublishedAt = r.PublishedAt ?? r.CreatedAt
+        });
 
-        var items = await query
-            .Skip((request.PageNumber - 1) * request.PageSize)
-            .Take(request.PageSize)
-            .Select(r => new RecipeDto
-            {
-                Id = r.Id,
-                Title = r.Title,
-                Slug = r.Slug,
-                Description = r.Description,
-                PrepTimeMinutes = r.PrepTimeMinutes,
-                CookTimeMinutes = r.CookTimeMinutes,
-                Servings = r.Servings,
-                Difficulty = r.Difficulty,
-                Status = r.Status,
-                PublishedAt = r.PublishedAt,
-                ViewCount = r.ViewCount,
-                RatingAverage = r.RatingAverage,
-                RatingCount = r.RatingCount,
-                CategoryId = r.CategoryId,
-                CategoryName = r.Category != null ? r.Category.Name : null,
-                CategorySlug = r.Category != null ? r.Category.Slug : null,
-                AuthorId = r.AuthorId,
-                AuthorName = r.Author != null ? r.Author.FullName : null,
-                PrimaryImageUrl = r.Images.Where(i => i.IsPrimary).Select(i => i.OriginalUrl).FirstOrDefault() 
-                                  ?? r.Images.Select(i => i.OriginalUrl).FirstOrDefault(),
-                Nutrition = r.Nutrition
-            })
-            .ToListAsync(cancellationToken);
+        // 5. Phân trang
+        var page = request.PageNumber <= 0 ? 1 : request.PageNumber;
+        var size = request.PageSize <= 0 ? 10 : request.PageSize;
 
-        return new PaginatedList<RecipeDto>(items, totalCount, request.PageNumber, request.PageSize);
+        var count = await dtoQuery.CountAsync(cancellationToken);
+        var items = await dtoQuery.Skip((page - 1) * size).Take(size).ToListAsync(cancellationToken);
+
+        var paginatedList = new PaginatedList<RecipeDto>(items, count, page, size);
+
+        return Result<PaginatedList<RecipeDto>>.Success(paginatedList);
     }
 }
