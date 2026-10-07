@@ -6,6 +6,7 @@ using CulinaryBlog.Application.Features.Recipes.Queries.GetRecipes;
 using CulinaryBlog.Application.Features.Recipes.Commands.ChangeRecipeStatus;
 using CulinaryBlog.Application.Features.Recipes.Commands.UpdateRecipe;
 using CulinaryBlog.Application.Features.Recipes.Commands.ArchiveRecipe;
+using CulinaryBlog.Application.Features.Recipes.Commands.DeleteRecipe;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using CulinaryBlog.API.Models.Requests;
@@ -203,6 +204,34 @@ public static class RecipeEndpoints
         .WithName("ArchiveRecipe")
         .WithSummary("Lưu trữ hoặc Bỏ lưu trữ công thức (Archive / Unarchive)")
         .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Chuyển công thức sang trạng thái Archived để ẩn khỏi danh sách công khai mà không xóa dữ liệu.")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces<Result<Unit>>(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
+
+        // FR-RCP-007: Xóa Công thức (Author, Admin)
+        group.MapDelete("/{id:guid}", async (
+            Guid id,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var command = new DeleteRecipeCommand(id, user);
+
+            var result = await mediator.Send(command, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+
+            return Results.NoContent();
+        })
+        .WithName("DeleteRecipe")
+        .WithSummary("Xóa vĩnh viễn công thức")
+        .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Xóa dữ liệu DB (Hard Delete) và đẩy Background Job (Hangfire) để xóa tài nguyên ảnh thực tế trên MinIO.")
         .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
         .Produces(StatusCodes.Status204NoContent)
         .Produces<Result<Unit>>(StatusCodes.Status400BadRequest)
