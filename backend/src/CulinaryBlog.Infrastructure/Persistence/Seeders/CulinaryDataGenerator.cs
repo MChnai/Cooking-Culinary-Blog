@@ -3,6 +3,7 @@ using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Enums;
 using CulinaryBlog.Domain.ValueObjects;
 using System.Text.RegularExpressions;
+using RecipeNutrition = CulinaryBlog.Domain.Entities.RecipeNutrition;
 
 namespace CulinaryBlog.Infrastructure.Persistence.Seeders;
 

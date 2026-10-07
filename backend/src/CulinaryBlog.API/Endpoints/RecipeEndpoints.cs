@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using CulinaryBlog.Application.Common.Models;
+using CulinaryBlog.Application.Features.Recipes.Commands.CreateRecipe;
 using CulinaryBlog.Application.Features.Recipes.DTOs;
 using CulinaryBlog.Application.Features.Recipes.Queries.GetRecipes;
 using MediatR;
@@ -45,5 +47,37 @@ public static class RecipeEndpoints
         .WithDescription("Trả về danh sách công thức công khai. Kết quả được Cache Output 15 phút.")
         .CacheOutput(policy => policy.Expire(TimeSpan.FromMinutes(15)).SetVaryByQuery("*"))
         .Produces<Result<PaginatedList<RecipeDto>>>(StatusCodes.Status200OK);
+
+        // FR-RCP-003: Tạo Công thức Mới (Author, Admin)
+        group.MapPost("/", async (
+            [FromBody] CreateRecipeCommand command,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userIdClaim, out var authorId))
+            {
+                return Results.Unauthorized();
+            }
+
+            var commandWithAuthor = command with { AuthorId = authorId };
+            var result = await mediator.Send(commandWithAuthor, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+
+            return Results.CreatedAtRoute("GetRecipeDetail", new { identifier = result.Value }, result);
+        })
+        .WithName("CreateRecipe")
+        .WithSummary("Tạo công thức mới (Trạng thái Draft)")
+        .WithDescription("Khởi tạo bài viết công thức mới ở trạng thái Draft. Cho phép đính kèm Steps, Ingredients, Nutrition.")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
+        .Produces<Result<Guid>>(StatusCodes.Status201Created)
+        .Produces<Result<Guid>>(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
     }
 }
