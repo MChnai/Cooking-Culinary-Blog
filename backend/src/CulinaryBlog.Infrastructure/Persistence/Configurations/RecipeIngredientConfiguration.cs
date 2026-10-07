@@ -18,6 +18,7 @@ public class RecipeIngredientConfiguration : IEntityTypeConfiguration<RecipeIngr
         builder.Property(ri => ri.Unit).HasColumnName("unit").HasMaxLength(50);
         builder.Property(ri => ri.Notes).HasColumnName("notes").HasMaxLength(255);
         builder.Property(ri => ri.OrderIndex).HasColumnName("order_index").HasDefaultValue(0);
+        builder.Property(i => i.OrderIndex).HasColumnName("order_index");
 
         builder.Property(ri => ri.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
         builder.Property(ri => ri.UpdatedAt).HasColumnName("updated_at");
