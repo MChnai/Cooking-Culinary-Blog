@@ -5,9 +5,11 @@ using CulinaryBlog.Application.Features.Recipes.DTOs;
 using CulinaryBlog.Application.Features.Recipes.Queries.GetRecipes;
 using CulinaryBlog.Application.Features.Recipes.Commands.ChangeRecipeStatus;
 using CulinaryBlog.Application.Features.Recipes.Commands.UpdateRecipe;
+using CulinaryBlog.Application.Features.Recipes.Commands.ArchiveRecipe;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using CulinaryBlog.API.Models.Requests;
+using CulinaryBlog.Domain.Enums;
 
 namespace CulinaryBlog.API.Endpoints;
 
@@ -83,11 +85,7 @@ public static class RecipeEndpoints
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status403Forbidden);
 
-        // FR-RCP-005: Xuất bản / Hủy Xuất bản Công thức (Author, Admin)
-        group.MapPatch("/{id:guid}/status", async (
-            Guid id,
-            [FromBody] ChangeRecipeStatusRequest request,
-       // FR-RCP-004: Cập nhật Công thức (Author, Admin)
+        // FR-RCP-004: Cập nhật Công thức (Author, Admin)
         group.MapPut("/{id:guid}", async (
             Guid id,
             [FromHeader(Name = "If-Match")] string? ifMatch,
@@ -96,10 +94,6 @@ public static class RecipeEndpoints
             ISender mediator,
             CancellationToken cancellationToken) =>
         {
-            var command = new ChangeRecipeStatusCommand
-            {
-                Id = id,
-                Status = request.Status,
             // 1. Kiểm tra ETag / If-Match header
             if (string.IsNullOrWhiteSpace(ifMatch))
             {
@@ -137,9 +131,6 @@ public static class RecipeEndpoints
 
             return Results.NoContent();
         })
-        .WithName("ChangeRecipeStatus")
-        .WithSummary("Xuất bản hoặc Hủy xuất bản công thức (Draft / Published)")
-        .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Quy tắc: Công thức phải có ít nhất 1 bước thực hiện mới được phép Xuất bản (Published).")
         .WithName("UpdateRecipe")
         .WithSummary("Cập nhật thông tin công thức")
         .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Bắt buộc truyền `If-Match` header chứa RowVersion (uint) để kiểm soát Concurrency Control.")
@@ -148,8 +139,75 @@ public static class RecipeEndpoints
         .Produces<Result<Unit>>(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status403Forbidden)
-        .Produces(StatusCodes.Status404NotFound);
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status412PreconditionFailed);
+
+        // FR-RCP-005: Xuất bản / Hủy Xuất bản Công thức (Author, Admin)
+        group.MapPatch("/{id:guid}/status", async (
+            Guid id,
+            [FromBody] ChangeRecipeStatusRequest request,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var command = new ChangeRecipeStatusCommand
+            {
+                Id = id,
+                Status = request.Status,
+                CurrentUser = user
+            };
+
+            var result = await mediator.Send(command, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+
+            return Results.NoContent();
+        })
+        .WithName("ChangeRecipeStatus")
+        .WithSummary("Xuất bản hoặc Hủy xuất bản công thức (Draft / Published)")
+        .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Quy tắc: Công thức phải có ít nhất 1 bước thực hiện mới được phép Xuất bản (Published).")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces<Result<Unit>>(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
+
+        // FR-RCP-006: Lưu trữ / Bỏ lưu trữ Công thức (Author, Admin)
+        group.MapPatch("/{id:guid}/archive", async (
+            Guid id,
+            [FromBody] ArchiveRecipeRequest request,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var command = new ArchiveRecipeCommand
+            {
+                Id = id,
+                IsArchived = request.IsArchived,
+                CurrentUser = user
+            };
+
+            var result = await mediator.Send(command, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+
+            return Results.NoContent();
+        })
+        .WithName("ArchiveRecipe")
+        .WithSummary("Lưu trữ hoặc Bỏ lưu trữ công thức (Archive / Unarchive)")
+        .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Chuyển công thức sang trạng thái Archived để ẩn khỏi danh sách công khai mà không xóa dữ liệu.")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces<Result<Unit>>(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     }
 }
