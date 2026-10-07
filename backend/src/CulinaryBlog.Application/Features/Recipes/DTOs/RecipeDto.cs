@@ -1,34 +1,21 @@
-using CulinaryBlog.Domain.Enums;
-using CulinaryBlog.Domain.ValueObjects;
-
 namespace CulinaryBlog.Application.Features.Recipes.DTOs;
 
-public record RecipeDto
+public class RecipeDto
 {
-    public Guid Id { get; init; }
-    public string Title { get; init; } = string.Empty;
-    public string Slug { get; init; } = string.Empty;
-    public string? Description { get; init; }
-    public string? Instructions { get; init; }
-    public int PrepTimeMinutes { get; init; }
-    public int CookTimeMinutes { get; init; }
-    public int Servings { get; init; }
-    public RecipeDifficulty Difficulty { get; init; }
-    public RecipeStatus Status { get; init; }
-    public DateTime? PublishedAt { get; init; }
-    public int ViewCount { get; init; }
-    public decimal RatingAverage { get; init; }
-    public int RatingCount { get; init; }
-    public Guid CategoryId { get; init; }
-    public string? CategoryName { get; init; }
-    public string? CategorySlug { get; init; }
-    public Guid AuthorId { get; init; }
-    public string? AuthorName { get; init; }
-    public string? PrimaryImageUrl { get; init; }
-    public RecipeNutrition? Nutrition { get; init; }
-    public List<RecipeIngredientDto> Ingredients { get; init; } = new();
-    public List<RecipeStepDto> Steps { get; init; } = new();
-    public List<RecipeImageDto> Images { get; init; } = new();
+    public Guid Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
+    public string? Summary { get; set; }
+    public string? CoverImage { get; set; }
+    public int PrepTimeMinutes { get; set; }
+    public int CookTimeMinutes { get; set; }
+    public int TotalTimeMinutes => PrepTimeMinutes + CookTimeMinutes;
+    public int Difficulty { get; set; }
+    public int ViewCount { get; set; }
+    public double AverageRating { get; set; }
+    public Guid CategoryId { get; set; }
+    public string CategoryName { get; set; } = string.Empty;
+    public DateTime PublishedAt { get; set; }
 }
 
 public record RecipeIngredientDto(Guid Id, string Name, decimal? Quantity, string? Unit, string? Notes, int OrderIndex);

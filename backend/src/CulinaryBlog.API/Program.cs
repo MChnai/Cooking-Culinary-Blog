@@ -82,5 +82,6 @@ app.UseAuthorization();
 app.MapAuthEndpoints();        
 app.MapHealthCheckEndpoints(); 
 app.MapCategoryEndpoints();
+app.MapRecipeEndpoints();
 
 app.Run();
