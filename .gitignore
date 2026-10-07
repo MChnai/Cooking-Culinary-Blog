@@ -7,6 +7,8 @@
 # Build output folders
 **/bin/
 **/obj/
+*.dll
+*.pdb
 
 # Visual Studio cache/options
 .vs/
