@@ -3,6 +3,7 @@ using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Recipes.Commands.CreateRecipe;
 using CulinaryBlog.Application.Features.Recipes.DTOs;
 using CulinaryBlog.Application.Features.Recipes.Queries.GetRecipes;
+using CulinaryBlog.Application.Features.Recipes.Commands.ChangeRecipeStatus;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -79,5 +80,39 @@ public static class RecipeEndpoints
         .Produces<Result<Guid>>(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status403Forbidden);
+
+        // FR-RCP-005: Xuất bản / Hủy Xuất bản Công thức (Author, Admin)
+        group.MapPatch("/{id:guid}/status", async (
+            Guid id,
+            [FromBody] ChangeRecipeStatusRequest request,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var command = new ChangeRecipeStatusCommand
+            {
+                Id = id,
+                Status = request.Status,
+                CurrentUser = user
+            };
+
+            var result = await mediator.Send(command, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+
+            return Results.NoContent();
+        })
+        .WithName("ChangeRecipeStatus")
+        .WithSummary("Xuất bản hoặc Hủy xuất bản công thức (Draft / Published)")
+        .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Quy tắc: Công thức phải có ít nhất 1 bước thực hiện mới được phép Xuất bản (Published).")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces<Result<Unit>>(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     }
 }
