@@ -5,50 +5,68 @@ using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Logging;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Đăng ký các dịch vụ hệ thống & Layer Architecture
-builder.Services.AddOpenApi();
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddApplication();
+// Bật ShowPII trong môi trường Development
+if (builder.Environment.IsDevelopment())
+{
+    IdentityModelEventSource.ShowPII = true;
+}
+
+// 1. Caching & OpenAPI
 builder.Services.AddMemoryCache();
+builder.Services.AddOpenApi();
+
+// 2. Application & Infrastructure
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+
+// 4. Cấu hình Authentication & Authorization
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var keyString = jwtSettings["Key"] ?? jwtSettings["SecretKey"] 
+    ?? throw new InvalidOperationException("JWT Key chưa được cấu hình!");
+
+// Gán KeyId cho SecurityKey trùng khớp với "kid" trong JwtService
+var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString))
+{
+    KeyId = "CulinaryBlogSecretKeyId" 
+};
 
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
+    options.TokenHandlers.Clear();
+    options.TokenHandlers.Add(new JwtSecurityTokenHandler());
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]!))
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = securityKey,
+        RoleClaimType = ClaimTypes.Role
     };
 });
 
-// 2. Đăng ký Dịch vụ Authentication & Authorization
-builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// 3. Cấu hình Middleware & OpenAPI / Scalar
+// 5. Scalar UI & Middleware
 if (app.Environment.IsDevelopment())
 {
-    // Map endpoint OpenAPI JSON (/openapi/v1.json)
     app.MapOpenApi();
-
-    // Tích hợp Scalar UI để test API
     app.MapScalarApiReference(options =>
     {
         options.Title = "Culinary Blog API Documentation";
@@ -57,13 +75,12 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// 4. Thứ tự Middleware quan trọng
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 5. Map Endpoints
-app.MapAuthEndpoints();        // Map các API Authentication (/api/auth/...)
-app.MapHealthCheckEndpoints(); // Map các API Health Check (/api/health/...)
+// 7. Map Endpoints
+app.MapAuthEndpoints();        
+app.MapHealthCheckEndpoints(); 
 app.MapCategoryEndpoints();
 
 app.Run();
