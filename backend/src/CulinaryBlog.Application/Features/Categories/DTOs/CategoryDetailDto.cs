@@ -1,9 +1,11 @@
+using CulinaryBlog.Application.Common.Models;
+
 namespace CulinaryBlog.Application.Features.Categories.DTOs;
 
-public record CategoryDto(
+public record CategoryDetailDto(
     Guid Id,
     string Name,
     string Slug,
     string? Description,
-    int RecipeCount
+    PaginatedList<RecipeBriefDto> Recipes
 );
