@@ -4,8 +4,10 @@ using CulinaryBlog.Application.Features.Recipes.Commands.CreateRecipe;
 using CulinaryBlog.Application.Features.Recipes.DTOs;
 using CulinaryBlog.Application.Features.Recipes.Queries.GetRecipes;
 using CulinaryBlog.Application.Features.Recipes.Commands.ChangeRecipeStatus;
+using CulinaryBlog.Application.Features.Recipes.Commands.UpdateRecipe;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using CulinaryBlog.API.Models.Requests;
 
 namespace CulinaryBlog.API.Endpoints;
 
@@ -85,6 +87,11 @@ public static class RecipeEndpoints
         group.MapPatch("/{id:guid}/status", async (
             Guid id,
             [FromBody] ChangeRecipeStatusRequest request,
+       // FR-RCP-004: Cập nhật Công thức (Author, Admin)
+        group.MapPut("/{id:guid}", async (
+            Guid id,
+            [FromHeader(Name = "If-Match")] string? ifMatch,
+            [FromBody] UpdateRecipeRequest request,
             ClaimsPrincipal user,
             ISender mediator,
             CancellationToken cancellationToken) =>
@@ -93,11 +100,36 @@ public static class RecipeEndpoints
             {
                 Id = id,
                 Status = request.Status,
+            // 1. Kiểm tra ETag / If-Match header
+            if (string.IsNullOrWhiteSpace(ifMatch))
+            {
+                return Results.BadRequest(Result<Unit>.Failure("MISSING_HEADER", "Thiếu header 'If-Match' (RowVersion)."));
+            }
+
+            var cleanETag = ifMatch.Trim('"');
+            if (!uint.TryParse(cleanETag, out var rowVersion))
+            {
+                return Results.BadRequest(Result<Unit>.Failure("INVALID_FORMAT", "Header 'If-Match' phải là số nguyên không âm (uint)."));
+            }
+
+            // 2. Map dữ liệu sang Command
+            var command = new UpdateRecipeCommand
+            {
+                Id = id,
+                Title = request.Title,
+                Description = request.Description,
+                PrepTimeMinutes = request.PrepTimeMinutes,
+                CookTimeMinutes = request.CookTimeMinutes,
+                Servings = request.Servings,
+                Difficulty = request.Difficulty,
+                CategoryId = request.CategoryId,
+                RowVersion = rowVersion,
                 CurrentUser = user
             };
 
             var result = await mediator.Send(command, cancellationToken);
 
+            // 3. Phản hồi HTTP Response
             if (!result.IsSuccess)
             {
                 return Results.BadRequest(result);
@@ -108,11 +140,16 @@ public static class RecipeEndpoints
         .WithName("ChangeRecipeStatus")
         .WithSummary("Xuất bản hoặc Hủy xuất bản công thức (Draft / Published)")
         .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Quy tắc: Công thức phải có ít nhất 1 bước thực hiện mới được phép Xuất bản (Published).")
+        .WithName("UpdateRecipe")
+        .WithSummary("Cập nhật thông tin công thức")
+        .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Bắt buộc truyền `If-Match` header chứa RowVersion (uint) để kiểm soát Concurrency Control.")
         .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
         .Produces(StatusCodes.Status204NoContent)
         .Produces<Result<Unit>>(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status403Forbidden)
         .Produces(StatusCodes.Status404NotFound);
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status412PreconditionFailed);
     }
 }
