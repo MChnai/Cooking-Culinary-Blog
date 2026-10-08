@@ -5,7 +5,7 @@ namespace CulinaryBlog.Infrastructure.Services;
 
 public class FileCleanupService : IFileCleanupService
 {
-    private readonly IFileStorageService _fileStorageService; // Service giao tiếp với MinIO/S3 hiện có
+    private readonly IFileStorageService _fileStorageService;
     private readonly ILogger<FileCleanupService> _logger;
 
     public FileCleanupService(IFileStorageService fileStorageService, ILogger<FileCleanupService> logger)
