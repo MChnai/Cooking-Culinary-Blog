@@ -42,7 +42,7 @@ public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, Res
         var categories = await _context.Categories
             .AsNoTracking()
             .Where(c => !c.IsDeleted) // Đảm bảo lọc các category chưa bị xóa mềm
-            .OrderBy(c => c.Name)     // 🟢 Sắp xếp theo thuộc tính Name của Entity trước
+            .OrderBy(c => c.Name)     
             .Select(c => new CategoryDto(
                 c.Id,
                 c.Name,
