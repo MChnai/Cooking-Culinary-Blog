@@ -11,6 +11,10 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using CulinaryBlog.API.Models.Requests;
 using CulinaryBlog.Domain.Enums;
+using CulinaryBlog.Application.Features.Recipes.Commands.UploadRecipeImage;
+using CulinaryBlog.Application.Features.Recipes.Commands.SetPrimaryImage;
+using CulinaryBlog.Application.Features.Recipes.Commands.DeleteRecipeImage;
+using CulinaryBlog.Application.Features.Recipes.DTOs;
 
 namespace CulinaryBlog.API.Endpoints;
 
@@ -211,15 +215,51 @@ public static class RecipeEndpoints
         .Produces(StatusCodes.Status403Forbidden)
         .Produces(StatusCodes.Status404NotFound);
 
-        // FR-RCP-007: Xóa Công thức (Author, Admin)
-        group.MapDelete("/{id:guid}", async (
+        // FR-RCP-008.1: Upload ảnh công thức
+        group.MapPost("/{id:guid}/images", async (
             Guid id,
+            IFormFile file,
+            [FromForm] string? altText,
+            [FromForm] bool isPrimary,
             ClaimsPrincipal user,
             ISender mediator,
             CancellationToken cancellationToken) =>
         {
-            var command = new DeleteRecipeCommand(id, user);
+            var command = new UploadRecipeImageCommand
+            {
+                RecipeId = id,
+                File = file,
+                AltText = altText,
+                IsPrimary = isPrimary,
+                CurrentUser = user
+            };
 
+            var result = await mediator.Send(command, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+
+            return Results.Created($"/api/recipes/{id}/images/{result.Data!.Id}", result);
+        })
+        .WithName("UploadRecipeImage")
+        .WithSummary("Tải lên ảnh mới cho công thức")
+        .WithDescription("FormData (tối đa 5MB, JPEG/PNG/WEBP, kiểm tra Magic Bytes).")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
+        .DisableAntiforgery()
+        .Produces<Result<RecipeImageDto>>(StatusCodes.Status201Created)
+        .Produces<Result<RecipeImageDto>>(StatusCodes.Status400BadRequest);
+
+        // FR-RCP-008.2: Thiết lập ảnh đại diện (Primary)
+        group.MapPatch("/{id:guid}/images/{imageId:guid}/primary", async (
+            Guid id,
+            Guid imageId,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var command = new SetPrimaryRecipeImageCommand(id, imageId, user);
             var result = await mediator.Send(command, cancellationToken);
 
             if (!result.IsSuccess)
@@ -229,14 +269,34 @@ public static class RecipeEndpoints
 
             return Results.NoContent();
         })
-        .WithName("DeleteRecipe")
-        .WithSummary("Xóa vĩnh viễn công thức")
-        .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Xóa dữ liệu DB (Hard Delete) và đẩy Background Job (Hangfire) để xóa tài nguyên ảnh thực tế trên MinIO.")
+        .WithName("SetPrimaryRecipeImage")
+        .WithSummary("Đặt ảnh làm đại diện (Primary)")
         .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
         .Produces(StatusCodes.Status204NoContent)
-        .Produces<Result<Unit>>(StatusCodes.Status400BadRequest)
-        .Produces(StatusCodes.Status401Unauthorized)
-        .Produces(StatusCodes.Status403Forbidden)
-        .Produces(StatusCodes.Status404NotFound);
+        .Produces<Result<Unit>>(StatusCodes.Status400BadRequest);
+
+        // FR-RCP-008.3: Xóa ảnh công thức
+        group.MapDelete("/{id:guid}/images/{imageId:guid}", async (
+            Guid id,
+            Guid imageId,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var command = new DeleteRecipeImageCommand(id, imageId, user);
+            var result = await mediator.Send(command, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+
+            return Results.NoContent();
+        })
+        .WithName("DeleteRecipeImage")
+        .WithSummary("Xóa ảnh công thức và dọn dẹp file MinIO qua Hangfire")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces<Result<Unit>>(StatusCodes.Status400BadRequest);
     }
 }
