@@ -18,6 +18,3 @@ public class RecipeDto
     public DateTime PublishedAt { get; set; }
 }
 
-public record RecipeIngredientDto(Guid Id, string Name, decimal? Quantity, string? Unit, string? Notes, int OrderIndex);
-public record RecipeStepDto(Guid Id, int StepNumber, string Title, string Description, int? TimerMinutes, string? ImageUrl);
-public record RecipeImageDto(Guid Id, string OriginalUrl, string? ThumbnailUrl, string? AltText, bool IsPrimary, int DisplayOrder);

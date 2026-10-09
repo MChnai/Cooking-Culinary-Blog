@@ -4,6 +4,7 @@ using CulinaryBlog.Infrastructure.Persistence.Seeders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using CulinaryBlog.Infrastructure.Services;
 
 namespace CulinaryBlog.Infrastructure;
 
@@ -23,6 +24,7 @@ public static class DependencyInjection
             });
         });
 
+        services.AddScoped<IFileStorageService, FileStorageService>();
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 

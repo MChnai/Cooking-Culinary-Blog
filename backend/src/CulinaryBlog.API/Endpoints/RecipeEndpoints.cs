@@ -11,6 +11,13 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using CulinaryBlog.API.Models.Requests;
 using CulinaryBlog.Domain.Enums;
+using CulinaryBlog.Application.Features.Recipes.Commands.UploadRecipeImage;
+using CulinaryBlog.Application.Features.Recipes.Commands.SetPrimaryImage;
+using CulinaryBlog.Application.Features.Recipes.Commands.DeleteRecipeImage;
+using CulinaryBlog.Application.Features.Recipes.Commands.AddIngredient;
+using CulinaryBlog.Application.Features.Recipes.Commands.DeleteIngredient;
+using CulinaryBlog.Application.Features.Recipes.Commands.UpdateIngredient;
+using CulinaryBlog.Application.Features.Recipes.Queries.GetIngredients;
 
 namespace CulinaryBlog.API.Endpoints;
 
@@ -211,15 +218,51 @@ public static class RecipeEndpoints
         .Produces(StatusCodes.Status403Forbidden)
         .Produces(StatusCodes.Status404NotFound);
 
-        // FR-RCP-007: Xóa Công thức (Author, Admin)
-        group.MapDelete("/{id:guid}", async (
+        // FR-RCP-008.1: Upload ảnh công thức
+        group.MapPost("/{id:guid}/images", async (
             Guid id,
+            IFormFile file,
+            [FromForm] string? altText,
+            [FromForm] bool isPrimary,
             ClaimsPrincipal user,
             ISender mediator,
             CancellationToken cancellationToken) =>
         {
-            var command = new DeleteRecipeCommand(id, user);
+            var command = new UploadRecipeImageCommand
+            {
+                RecipeId = id,
+                File = file,
+                AltText = altText,
+                IsPrimary = isPrimary,
+                CurrentUser = user
+            };
 
+            var result = await mediator.Send(command, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+
+            return Results.Created($"/api/recipes/{id}/images/{result.Value!.Id}", result);
+        })
+        .WithName("UploadRecipeImage")
+        .WithSummary("Tải lên ảnh mới cho công thức")
+        .WithDescription("FormData (tối đa 5MB, JPEG/PNG/WEBP, kiểm tra Magic Bytes).")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
+        .DisableAntiforgery()
+        .Produces<Result<RecipeImageDto>>(StatusCodes.Status201Created)
+        .Produces<Result<RecipeImageDto>>(StatusCodes.Status400BadRequest);
+
+        // FR-RCP-008.2: Thiết lập ảnh đại diện (Primary)
+        group.MapPatch("/{id:guid}/images/{imageId:guid}/primary", async (
+            Guid id,
+            Guid imageId,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var command = new SetPrimaryRecipeImageCommand(id, imageId, user);
             var result = await mediator.Send(command, cancellationToken);
 
             if (!result.IsSuccess)
@@ -229,14 +272,210 @@ public static class RecipeEndpoints
 
             return Results.NoContent();
         })
-        .WithName("DeleteRecipe")
-        .WithSummary("Xóa vĩnh viễn công thức")
-        .WithDescription("Yêu cầu quyền Author (chủ sở hữu) hoặc Admin. Xóa dữ liệu DB (Hard Delete) và đẩy Background Job (Hangfire) để xóa tài nguyên ảnh thực tế trên MinIO.")
+        .WithName("SetPrimaryRecipeImage")
+        .WithSummary("Đặt ảnh làm đại diện (Primary)")
         .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
         .Produces(StatusCodes.Status204NoContent)
-        .Produces<Result<Unit>>(StatusCodes.Status400BadRequest)
-        .Produces(StatusCodes.Status401Unauthorized)
-        .Produces(StatusCodes.Status403Forbidden)
-        .Produces(StatusCodes.Status404NotFound);
+        .Produces<Result<Unit>>(StatusCodes.Status400BadRequest);
+
+        // FR-RCP-008.3: Xóa ảnh công thức
+        group.MapDelete("/{id:guid}/images/{imageId:guid}", async (
+            Guid id,
+            Guid imageId,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var command = new DeleteRecipeImageCommand(id, imageId, user);
+            var result = await mediator.Send(command, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+
+            return Results.NoContent();
+        })
+        .WithName("DeleteRecipeImage")
+        .WithSummary("Xóa ảnh công thức và dọn dẹp file MinIO qua Hangfire")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"))
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces<Result<Unit>>(StatusCodes.Status400BadRequest);
+
+        // FR-RCP-009: Quản lý Nguyên liệu (Tạo Sub-group riêng)
+        var ingredientGroup = group.MapGroup("/{recipeId:guid}/ingredients")
+                                   .WithTags("Recipe Ingredients");
+
+        // GET: Lấy danh sách nguyên liệu
+        ingredientGroup.MapGet("/", async (
+            Guid recipeId,
+            ISender mediator,
+            CancellationToken ct) =>
+        {
+            var query = new GetRecipeIngredientsQuery(recipeId);
+            var result = await mediator.Send(query, ct);
+            return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
+        });
+
+        // POST: Thêm nguyên liệu mới
+        ingredientGroup.MapPost("/", async (
+            Guid recipeId,
+            [FromBody] CreateIngredientRequest request,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken ct) =>
+        {
+            var command = new AddIngredientCommand
+            {
+                RecipeId = recipeId,
+                Name = request.Name,
+                Quantity = request.Quantity,
+                Unit = request.Unit,
+                Notes = request.Notes,
+                SortOrder = request.SortOrder,
+                CurrentUser = user
+            };
+
+            var result = await mediator.Send(command, ct);
+            return result.IsSuccess 
+                ? Results.Created($"/api/recipes/{recipeId}/ingredients/{result.Value!.Id}", result) 
+                : Results.BadRequest(result);
+        }).RequireAuthorization();
+
+        // PUT: Cập nhật nguyên liệu
+        ingredientGroup.MapPut("/{ingredientId:guid}", async (
+            Guid recipeId,  
+            Guid ingredientId,
+            [FromBody] UpdateIngredientRequest request,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken ct) =>
+        {
+            var command = new UpdateIngredientCommand
+            {
+                RecipeId = recipeId,
+                IngredientId = ingredientId,
+                Name = request.Name,
+                Quantity = request.Quantity,
+                Unit = request.Unit,
+                Notes = request.Notes,
+                SortOrder = request.SortOrder,
+                CurrentUser = user
+            };
+
+            var result = await mediator.Send(command, ct);
+            return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
+        }).RequireAuthorization();
+
+        // DELETE: Xóa nguyên liệu
+        ingredientGroup.MapDelete("/{ingredientId:guid}", async (
+            Guid recipeId,
+            Guid ingredientId,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken ct) =>
+        {
+            var command = new DeleteIngredientCommand
+            {
+                RecipeId = recipeId,
+                IngredientId = ingredientId,
+                CurrentUser = user
+            };
+
+            var result = await mediator.Send(command, ct);
+            return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
+        }).RequireAuthorization();
+
+        // ==========================================
+        // FR-RCP-010: Quản lý Các bước Thực hiện (Steps)
+        // Sub-group: /api/recipes/{recipeId:guid}/steps
+        // ==========================================
+        var stepGroup = group.MapGroup("/{recipeId:guid}/steps")
+                            .WithTags("Recipe Steps");
+
+        // GET: Lấy danh sách các bước
+        stepGroup.MapGet("/", async (
+            Guid recipeId,
+            ISender mediator,
+            CancellationToken ct) =>
+        {
+            var query = new GetRecipeStepsQuery(recipeId);
+            var result = await mediator.Send(query, ct);
+            return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
+        })
+        .WithName("GetRecipeSteps")
+        .WithSummary("Lấy danh sách các bước thực hiện");
+
+        // POST: Thêm bước mới
+        stepGroup.MapPost("/", async (
+            Guid recipeId,
+            [FromBody] CreateRecipeStepRequest request,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken ct) =>
+        {
+            var command = new AddRecipeStepCommand
+            {
+                RecipeId = recipeId,
+                Instruction = request.Instruction,
+                ImageUrl = request.ImageUrl,
+                CurrentUser = user
+            };
+
+            var result = await mediator.Send(command, ct);
+            return result.IsSuccess 
+                ? Results.Created($"/api/recipes/{recipeId}/steps/{result.Value!.Id}", result) 
+                : Results.BadRequest(result);
+        })
+        .WithName("AddRecipeStep")
+        .WithSummary("Thêm bước thực hiện mới")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"));
+
+        // PUT: Cập nhật bước thực hiện
+        stepGroup.MapPut("/{stepId:guid}", async (
+            Guid recipeId,
+            Guid stepId,
+            [FromBody] UpdateRecipeStepRequest request,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken ct) =>
+        {
+            var command = new UpdateRecipeStepCommand
+            {
+                RecipeId = recipeId,
+                StepId = stepId,
+                Instruction = request.Instruction,
+                ImageUrl = request.ImageUrl,
+                CurrentUser = user
+            };
+
+            var result = await mediator.Send(command, ct);
+            return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
+        })
+        .WithName("UpdateRecipeStep")
+        .WithSummary("Cập nhật bước thực hiện")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"));
+
+        // DELETE: Xóa bước thực hiện & Re-index
+        stepGroup.MapDelete("/{stepId:guid}", async (
+            Guid recipeId,
+            Guid stepId,
+            ClaimsPrincipal user,
+            ISender mediator,
+            CancellationToken ct) =>
+        {
+            var command = new DeleteRecipeStepCommand
+            {
+                RecipeId = recipeId,
+                StepId = stepId,
+                CurrentUser = user
+            };
+
+            var result = await mediator.Send(command, ct);
+            return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
+        })
+        .WithName("DeleteRecipeStep")
+        .WithSummary("Xóa bước thực hiện (Tự động sắp xếp lại StepNumber)")
+        .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"));
     }
 }
