@@ -42,29 +42,39 @@ public static class RecipeEndpoints
             [FromQuery] string? searchTerm,
             [FromQuery] string? sortBy,
             [FromQuery] string? sortDirection,
-            ISender mediator,
-            CancellationToken cancellationToken) =>
+            ISender mediator = null!,
+            CancellationToken cancellationToken = default) =>
         {
+            // Dùng Named Arguments khớp với GetRecipesQuery
             var query = new GetRecipesQuery(
-                pageNumber ?? 1,
-                pageSize ?? 10,
-                categoryId,
-                difficulty,
-                maxTotalTime,
-                searchTerm,
-                sortBy,
-                sortDirection
+                PageNumber: pageNumber ?? 1,
+                PageSize: pageSize ?? 10,
+                CategoryId: categoryId,
+                Difficulty: difficulty,
+                MaxTotalTime: maxTotalTime,
+                SearchTerm: searchTerm,
+                SortBy: sortBy ?? "createdAt",
+                SortDirection: sortDirection ?? "desc"
             );
 
             var result = await mediator.Send(query, cancellationToken);
 
-            return Results.Ok(result);
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(new
+                {
+                    code = result.ErrorCode,
+                    message = result.ErrorMessage
+                });
+            }
+
+            return Results.Ok(result.Value);
         })
         .WithName("GetRecipes")
-        .WithSummary("Xem danh sách công thức (Phân trang, Lọc, Sắp xếp)")
-        .WithDescription("Trả về danh sách công thức công khai. Kết quả được Cache Output 15 phút.")
-        .CacheOutput(policy => policy.Expire(TimeSpan.FromMinutes(15)).SetVaryByQuery("*"))
-        .Produces<Result<PaginatedList<RecipeDto>>>(StatusCodes.Status200OK);
+        .WithSummary("Xem danh sách công thức (FR-RCP-001)")
+        .Produces<Result<PaginatedList<RecipeDto>>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .AllowAnonymous();
 
         // FR-RCP-003: Tạo Công thức Mới (Author, Admin)
         group.MapPost("/", async (
@@ -483,15 +493,31 @@ public static class RecipeEndpoints
         .WithSummary("Xóa bước thực hiện (Tự động sắp xếp lại StepNumber)")
         .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"));
 
-        // FR-SRCH-001: Tìm kiếm bài viết công thức toàn văn bản (Full-Text Search)
+        // FR-SRCH-001/002/003/004: Tìm kiếm bài viết công thức toàn văn bản (Full-Text Search)
         group.MapGet("/search", async (
             [FromQuery] string? keyword,
-            [FromQuery] int page,
-            [FromQuery] int pageSize,
-            ISender mediator,
-            CancellationToken cancellationToken) =>
+            [FromQuery] Guid? categoryId,
+            [FromQuery] int? difficulty,
+            [FromQuery] int? maxTotalTime,
+            [FromQuery] string? sortBy,
+            [FromQuery] string? sortDirection,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            ISender mediator = null!,
+            CancellationToken cancellationToken = default) =>
         {
-            var query = new SearchRecipesQuery(keyword, page == 0 ? 1 : page, pageSize == 0 ? 10 : pageSize);
+            // Dùng Named Arguments để truyền đúng tham số
+            var query = new SearchRecipesQuery(
+                Keyword: keyword,
+                CategoryId: categoryId,
+                Difficulty: difficulty,
+                MaxTotalTime: maxTotalTime,
+                SortBy: sortBy ?? "rank",
+                SortDirection: sortDirection ?? "desc",
+                Page: page <= 0 ? 1 : page,
+                PageSize: pageSize <= 0 ? 10 : pageSize
+            );
+
             var result = await mediator.Send(query, cancellationToken);
 
             if (!result.IsSuccess)
@@ -507,7 +533,7 @@ public static class RecipeEndpoints
         })
         .WithName("SearchRecipes")
         .WithSummary("Tìm kiếm công thức toàn văn bản không dấu (FR-SRCH-001)")
-        .Produces<Result<PagedResult<RecipeSearchResultDto>>>(StatusCodes.Status200OK)
+        .Produces<Result<PaginatedList<RecipeDto>>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .AllowAnonymous();
     }
