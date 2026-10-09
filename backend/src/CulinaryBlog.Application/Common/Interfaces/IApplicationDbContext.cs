@@ -1,5 +1,6 @@
 using CulinaryBlog.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace CulinaryBlog.Application.Common.Interfaces;
 
@@ -12,6 +13,7 @@ public interface IApplicationDbContext
     DbSet<RecipeImage> RecipeImages { get; }
     DbSet<ApplicationUser> Users { get; }
     DbSet<RefreshToken> RefreshTokens { get; }
+    DatabaseFacade Database { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
