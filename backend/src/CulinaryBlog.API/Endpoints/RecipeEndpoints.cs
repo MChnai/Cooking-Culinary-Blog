@@ -22,6 +22,7 @@ using CulinaryBlog.Application.Features.Recipes.Commands.AddStep;
 using CulinaryBlog.Application.Features.Recipes.Commands.UpdateStep;
 using CulinaryBlog.Application.Features.Recipes.Commands.DeleteStep;
 using CulinaryBlog.Application.Features.Recipes.Queries.GetIngredients;
+using CulinaryBlog.Application.Features.Recipes.Queries.SearchRecipes;
 
 namespace CulinaryBlog.API.Endpoints;
 
@@ -481,5 +482,33 @@ public static class RecipeEndpoints
         .WithName("DeleteRecipeStep")
         .WithSummary("Xóa bước thực hiện (Tự động sắp xếp lại StepNumber)")
         .RequireAuthorization(policy => policy.RequireRole("Author", "Admin"));
+
+        // FR-SRCH-001: Tìm kiếm bài viết công thức toàn văn bản (Full-Text Search)
+        group.MapGet("/search", async (
+            [FromQuery] string? keyword,
+            [FromQuery] int page,
+            [FromQuery] int pageSize,
+            ISender mediator,
+            CancellationToken cancellationToken) =>
+        {
+            var query = new SearchRecipesQuery(keyword, page == 0 ? 1 : page, pageSize == 0 ? 10 : pageSize);
+            var result = await mediator.Send(query, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(new
+                {
+                    code = result.ErrorCode,
+                    message = result.ErrorMessage
+                });
+            }
+
+            return Results.Ok(result.Value);
+        })
+        .WithName("SearchRecipes")
+        .WithSummary("Tìm kiếm công thức toàn văn bản không dấu (FR-SRCH-001)")
+        .Produces<Result<PagedResult<RecipeSearchResultDto>>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .AllowAnonymous();
     }
 }
