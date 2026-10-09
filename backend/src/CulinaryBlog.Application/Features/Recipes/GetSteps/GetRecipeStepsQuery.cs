@@ -32,7 +32,7 @@ public class GetRecipeStepsQueryHandler : IRequestHandler<GetRecipeStepsQuery, R
                 Id = s.Id,
                 RecipeId = s.RecipeId,
                 StepNumber = s.StepNumber,
-                Instruction = s.Instruction,
+                Instruction = s.Description, // Map từ Description trong Entity sang Instruction DTO
                 ImageUrl = s.ImageUrl
             })
             .ToListAsync(cancellationToken);
