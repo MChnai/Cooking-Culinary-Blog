@@ -17,6 +17,10 @@ using CulinaryBlog.Application.Features.Recipes.Commands.DeleteRecipeImage;
 using CulinaryBlog.Application.Features.Recipes.Commands.AddIngredient;
 using CulinaryBlog.Application.Features.Recipes.Commands.DeleteIngredient;
 using CulinaryBlog.Application.Features.Recipes.Commands.UpdateIngredient;
+using CulinaryBlog.Application.Features.Recipes.Queries.GetSteps;
+using CulinaryBlog.Application.Features.Recipes.Commands.AddStep;
+using CulinaryBlog.Application.Features.Recipes.Commands.UpdateStep;
+using CulinaryBlog.Application.Features.Recipes.Commands.DeleteStep;
 using CulinaryBlog.Application.Features.Recipes.Queries.GetIngredients;
 
 namespace CulinaryBlog.API.Endpoints;

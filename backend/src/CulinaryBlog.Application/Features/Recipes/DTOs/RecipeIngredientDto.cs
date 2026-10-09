@@ -10,3 +10,21 @@ public class RecipeIngredientDto
     public string? Notes { get; set; }
     public int SortOrder { get; set; }
 }
+
+public class CreateIngredientRequest
+{
+    public string Name { get; set; } = string.Empty;
+    public decimal Quantity { get; set; }
+    public string Unit { get; set; } = string.Empty;
+    public string? Notes { get; set; }
+    public int SortOrder { get; set; }
+}
+
+public class UpdateIngredientRequest
+{
+    public string Name { get; set; } = string.Empty;
+    public decimal Quantity { get; set; }
+    public string Unit { get; set; } = string.Empty;
+    public string? Notes { get; set; }
+    public int SortOrder { get; set; }
+}

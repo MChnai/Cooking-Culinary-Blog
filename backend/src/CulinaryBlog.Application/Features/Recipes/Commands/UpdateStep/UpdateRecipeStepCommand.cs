@@ -32,7 +32,7 @@ public class UpdateRecipeStepCommandHandler : IRequestHandler<UpdateRecipeStepCo
         if (step == null)
             return Result<Unit>.Failure("NOT_FOUND", "Không tìm thấy bước thực hiện.");
 
-        step.Instruction = request.Instruction;
+        step.Description = request.Instruction; // Gán vào Description của Entity
         step.ImageUrl = request.ImageUrl;
 
         await _context.SaveChangesAsync(cancellationToken);
