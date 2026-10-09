@@ -39,7 +39,7 @@ public class GetRecipeIngredientsQueryHandler
                 RecipeId = ri.RecipeId,
                 Name = ri.Name,
                 Quantity = ri.Quantity,
-                Unit = ri.Unit,
+                Unit = ri.Unit ?? string.Empty,
                 Notes = ri.Notes ?? string.Empty,
                 SortOrder = 0 
             })
