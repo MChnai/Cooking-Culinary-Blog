@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using CulinaryBlog.Infrastructure.Services;
 using Minio;
 using CulinaryBlog.Infrastructure.Storage;
+using CulinaryBlog.Infrastructure.Jobs;
 
 namespace CulinaryBlog.Infrastructure;
 
@@ -35,6 +36,8 @@ public static class DependencyInjection
 
         services.AddSingleton<IJwtService, Services.JwtService>();
         services.AddSingleton<IPasswordHasher, Services.PasswordHasher>();
+        services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IWelcomeEmailJobService, WelcomeEmailJobService>();
 
         // Register Minio Client SDK
         services.AddMinio(config =>
@@ -47,6 +50,9 @@ public static class DependencyInjection
 
         // Register Storage Service Abstraction
         services.AddScoped<IStorageService, MinioStorageService>();
+        services.AddScoped<IThumbnailJobService, ThumbnailJobService>();
+        services.AddScoped<SitemapJob>();
+        services.AddScoped<ISitemapJobService, SitemapJobService>();
 
         return services;
     }

@@ -22,7 +22,11 @@ public static class AuthEndpoints
                        .WithTags("Authentication");
 
         // POST: Register
-        group.MapPost("/register", async (RegisterRequest request, IApplicationDbContext dbContext, IPasswordHasher passwordHasher) =>
+        group.MapPost("/register", async (
+            RegisterRequest request, 
+            IApplicationDbContext dbContext, 
+            IPasswordHasher passwordHasher,
+            IWelcomeEmailJobService welcomeEmailJobService) => 
         {
             var normalizedEmail = request.Email.Trim().ToLowerInvariant();
             
@@ -47,6 +51,9 @@ public static class AuthEndpoints
 
             dbContext.Users.Add(user);
             await dbContext.SaveChangesAsync(CancellationToken.None);
+
+            // 2. BỔ SUNG DÒNG NÀY: Kích hoạt Fire-and-Forget Job gửi Email chào mừng (FR-JOB-001)
+            welcomeEmailJobService.EnqueueWelcomeEmail(user.Email, user.Username);
 
             return Results.Created($"/api/auth/users/{user.Id}", new 
             { 
@@ -157,5 +164,6 @@ public static class AuthEndpoints
         .WithName("RefreshToken")
         .Produces<Result<AuthResponseDto>>(StatusCodes.Status200OK)
         .Produces<Result<AuthResponseDto>>(StatusCodes.Status401Unauthorized);
+        
     }
 }
