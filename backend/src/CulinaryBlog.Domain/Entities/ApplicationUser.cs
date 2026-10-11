@@ -12,8 +12,6 @@ public class ApplicationUser : BaseEntity
     public string? AvatarUrl { get; set; }
     public string? Bio { get; set; }
     public bool EmailConfirmed { get; set; } = true;
-    public uint RowVersion { get; set; } 
-
     // Lockout & Security
     public int AccessFailedCount { get; set; } = 0;
     public DateTimeOffset? LockoutEnd { get; set; }
