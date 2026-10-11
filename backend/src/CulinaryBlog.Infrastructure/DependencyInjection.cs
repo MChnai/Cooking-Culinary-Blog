@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using CulinaryBlog.Infrastructure.Services;
 using Minio;
 using CulinaryBlog.Infrastructure.Storage;
+using CulinaryBlog.Infrastructure.Jobs;
 
 namespace CulinaryBlog.Infrastructure;
 
@@ -50,6 +51,8 @@ public static class DependencyInjection
         // Register Storage Service Abstraction
         services.AddScoped<IStorageService, MinioStorageService>();
         services.AddScoped<IThumbnailJobService, ThumbnailJobService>();
+        services.AddScoped<SitemapJob>();
+        services.AddScoped<ISitemapJobService, SitemapJobService>();
 
         return services;
     }
