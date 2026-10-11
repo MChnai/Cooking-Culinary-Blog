@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using CulinaryBlog.Infrastructure.Services;
+using Minio;
+using CulinaryBlog.Infrastructure.Storage;
 
 namespace CulinaryBlog.Infrastructure;
 
@@ -14,6 +16,9 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection") 
                                ?? "Host=localhost;Port=5432;Database=culinaryblog;Username=postgres;Password=postgres";
+
+        var minioOptions = configuration.GetSection(MinioOptions.SectionName).Get<MinioOptions>()!;
+            services.Configure<MinioOptions>(configuration.GetSection(MinioOptions.SectionName));
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -30,6 +35,18 @@ public static class DependencyInjection
 
         services.AddSingleton<IJwtService, Services.JwtService>();
         services.AddSingleton<IPasswordHasher, Services.PasswordHasher>();
+
+        // Register Minio Client SDK
+        services.AddMinio(config =>
+        {
+            config.WithEndpoint(minioOptions.Endpoint)
+                  .WithCredentials(minioOptions.AccessKey, minioOptions.SecretKey)
+                  .WithSSL(minioOptions.UseSSL)
+                  .Build();
+        });
+
+        // Register Storage Service Abstraction
+        services.AddScoped<IStorageService, MinioStorageService>();
 
         return services;
     }

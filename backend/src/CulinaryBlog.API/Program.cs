@@ -101,5 +101,6 @@ app.MapAuthEndpoints();
 app.MapHealthCheckEndpoints(); 
 app.MapCategoryEndpoints();
 app.MapRecipeEndpoints();
+app.MapFileEndpoints();
 
 app.Run();
