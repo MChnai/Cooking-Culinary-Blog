@@ -92,6 +92,11 @@ if (app.Environment.IsDevelopment())
     // (Tùy chọn) Bật thêm Dashboard riêng của Hangfire để theo dõi các Job xóa file ngầm
     app.UseHangfireDashboard("/hangfire");
 }
+using (var scope = app.Services.CreateScope())
+{
+    var sitemapJobService = scope.ServiceProvider.GetRequiredService<ISitemapJobService>();
+    sitemapJobService.ScheduleRecurringSitemapJob();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -102,5 +107,6 @@ app.MapHealthCheckEndpoints();
 app.MapCategoryEndpoints();
 app.MapRecipeEndpoints();
 app.MapFileEndpoints();
+app.MapJobEndpoints();
 
 app.Run();
