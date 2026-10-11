@@ -8,14 +8,17 @@ namespace CulinaryBlog.Application.Features.Files.Commands.UploadFile;
 public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, Result<FileUploadedDto>>
 {
     private readonly IStorageService _storageService;
+    private readonly IThumbnailJobService _thumbnailJobService;
 
     // Các định dạng file cho phép upload (Ảnh & Tài liệu)
     private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".pdf"];
+    private static readonly string[] ImageExtensions = [".jpg", ".jpeg", ".png", ".webp"];
     private const long MaxFileSizeInBytes = 10 * 1024 * 1024; // 10 MB
 
-    public UploadFileCommandHandler(IStorageService storageService)
+    public UploadFileCommandHandler(IStorageService storageService, IThumbnailJobService thumbnailJobService) 
     {
         _storageService = storageService;
+        _thumbnailJobService = thumbnailJobService;
     }
 
     public async Task<Result<FileUploadedDto>> Handle(UploadFileCommand request, CancellationToken cancellationToken)
@@ -41,6 +44,12 @@ public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, Resul
         // Gọi Storage Service lưu vào MinIO (Tên file được tự động sinh GUID ngẫu nhiên)
         var fileUrl = await _storageService.UploadFileAsync(file, request.BucketName, cancellationToken);
         var fileName = Path.GetFileName(new Uri(fileUrl).LocalPath);
+        var targetBucket = request.BucketName ?? "culinary-blog";
+
+       if (ImageExtensions.Contains(extension))
+        {
+            _thumbnailJobService.EnqueueThumbnailJob(fileName, targetBucket);
+        }
 
         var dto = new FileUploadedDto
         {

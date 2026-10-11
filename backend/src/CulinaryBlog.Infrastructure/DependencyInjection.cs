@@ -49,6 +49,7 @@ public static class DependencyInjection
 
         // Register Storage Service Abstraction
         services.AddScoped<IStorageService, MinioStorageService>();
+        services.AddScoped<IThumbnailJobService, ThumbnailJobService>();
 
         return services;
     }
