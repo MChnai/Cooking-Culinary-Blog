@@ -1,6 +1,7 @@
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Files.DTOs;
+using CulinaryBlog.Application.Common.Metrics;
 using MediatR;
 
 namespace CulinaryBlog.Application.Features.Files.Commands.UploadFile;
@@ -58,6 +59,7 @@ public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, Resul
             ContentType = file.ContentType,
             Size = file.Length
         };
+        CulinaryBlogMetrics.FilesUploadedCounter.Add(1, new KeyValuePair<string, object?>("file_type", extension));
 
         return Result<FileUploadedDto>.Success(dto);
     }
