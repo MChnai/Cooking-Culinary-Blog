@@ -15,6 +15,7 @@ using Scalar.AspNetCore;
 using Serilog;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
+using Asp.Versioning;
 
 // 0. Khởi tạo Bootstrap Logger cho giai đoạn App Startup (FR-OBS-002)
 Log.Logger = new LoggerConfiguration()
@@ -125,6 +126,21 @@ try
         };
     });
 
+    builder.Services.AddApiVersioning(options =>
+    {
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.ReportApiVersions = true;
+        options.ApiVersionReader = ApiVersionReader.Combine(
+            new UrlSegmentApiVersionReader(),
+            new HeaderApiVersionReader("X-Api-Version")
+        );
+    }).AddApiExplorer(options =>
+    {
+        options.GroupNameFormat = "'v'VVV";
+        options.SubstituteApiVersionInUrl = true;
+    });
+
     builder.Services.AddAuthorization();
     builder.Services.AddScoped<IBackgroundJobService, HangfireJobService>();
 
@@ -156,6 +172,18 @@ try
         sitemapJobService.ScheduleRecurringSitemapJob();
     }
 
+        // Định tuyến Versioned Minimal API Set
+    var apiVersionSet = app.NewApiVersionSet()
+        .HasApiVersion(new ApiVersion(1, 0))
+        .HasApiVersion(new ApiVersion(2, 0))
+        .ReportApiVersions()
+        .Build();
+
+    // Ví dụ gán version vào Group Endpoints
+    var versionedGroup = app.MapGroup("/api/v{version:apiVersion}")
+                            .WithApiVersionSet(apiVersionSet);
+
+
     app.UseCors("AllowFrontend");
     app.UseRateLimiter();
     app.UseAuthentication();
@@ -166,12 +194,20 @@ try
     app.UseAuthorization();
 
     // 9. Map Endpoints
-    app.MapAuthEndpoints();        
-    app.MapHealthCheckEndpoints(); 
-    app.MapCategoryEndpoints();
-    app.MapRecipeEndpoints();
-    app.MapFileEndpoints();
-    app.MapJobEndpoints();
+    // app.MapAuthEndpoints();        
+    // app.MapHealthCheckEndpoints(); 
+    // app.MapCategoryEndpoints();
+    // app.MapRecipeEndpoints();
+    // app.MapFileEndpoints();
+    // app.MapJobEndpoints();
+
+    versionedGroup.MapAuthEndpoints();        
+    versionedGroup.MapCategoryEndpoints();
+    versionedGroup.MapRecipeEndpoints();
+    versionedGroup.MapFileEndpoints();
+    versionedGroup.MapJobEndpoints();
+
+    app.MapHealthCheckEndpoints();
 
     app.Run();
 }
