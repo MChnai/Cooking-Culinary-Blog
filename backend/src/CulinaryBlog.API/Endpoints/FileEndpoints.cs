@@ -17,7 +17,7 @@ public static class FileEndpoints
         var group = app.MapGroup("/api/files")
                        .WithTags("File Management");
 
-        // FR-FILE-001: Upload File lên MinIO S3
+        // FR-FILE-001 & FR-JOB-002: Upload File & Tự động sinh Thumbnail (nếu là ảnh)
         group.MapPost("/upload", async (
             IFormFile file,
             [FromForm] string? bucketName,
@@ -39,11 +39,11 @@ public static class FileEndpoints
             return Results.Ok(result.Value);
         })
         .WithName("UploadFile")
-        .WithSummary("Upload file lên MinIO Object Storage (FR-FILE-001)")
-        .DisableAntiforgery() // Bỏ qua Antiforgery validation cho Multipart Form
+        .WithSummary("Upload file lên MinIO và tự động sinh thumbnail cho tệp ảnh (FR-FILE-001 & FR-JOB-002)")
+        .DisableAntiforgery()
         .Produces<Result<FileUploadedDto>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization(); // Yêu cầu đã đăng nhập mới được upload
+        .RequireAuthorization();
 
         // FR-FILE-002: Xóa File khỏi MinIO S3
         group.MapDelete("/", async (
