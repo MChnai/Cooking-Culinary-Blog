@@ -13,6 +13,8 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Serilog;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 
 // 0. Khởi tạo Bootstrap Logger cho giai đoạn App Startup (FR-OBS-002)
 Log.Logger = new LoggerConfiguration()
@@ -22,6 +24,42 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowFrontend", policy =>
+        {
+            policy.WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() 
+                    ?? new[] { "http://localhost:3000", "http://localhost:5173" })
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+    });
+
+    builder.Services.AddRateLimiter(options =>
+    {
+        options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+        
+        // Fixed Window Policy: Tối đa 100 request / 1 phút cho mỗi IP
+        options.AddFixedWindowLimiter("fixed-window", opt =>
+        {
+            opt.Window = TimeSpan.FromMinutes(1);
+            opt.PermitLimit = 100;
+            opt.QueueLimit = 10;
+            opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        });
+
+        // Token Bucket Policy riêng cho các API nhạy cảm (Auth Login/Register)
+        options.AddTokenBucketLimiter("auth-limiter", opt =>
+        {
+            opt.TokenLimit = 10;
+            opt.QueueLimit = 2;
+            opt.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
+            opt.TokensPerPeriod = 2;
+            opt.AutoReplenishment = true;
+        });
+    });
 
     // Bật Serilog cho ứng dụng
     builder.Host.UseSerilog((context, services, configuration) => configuration
@@ -117,6 +155,11 @@ try
         var sitemapJobService = scope.ServiceProvider.GetRequiredService<ISitemapJobService>();
         sitemapJobService.ScheduleRecurringSitemapJob();
     }
+
+    app.UseCors("AllowFrontend");
+    app.UseRateLimiter();
+    app.UseAuthentication();
+    app.UseAuthorization();
 
     // 8. Auth Middlewares
     app.UseAuthentication();
