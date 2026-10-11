@@ -8,6 +8,9 @@ using CulinaryBlog.Infrastructure.Services;
 using Minio;
 using CulinaryBlog.Infrastructure.Storage;
 using CulinaryBlog.Infrastructure.Jobs;
+using CulinaryBlog.Infrastructure.HealthChecks;
+
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace CulinaryBlog.Infrastructure;
 
@@ -48,11 +51,29 @@ public static class DependencyInjection
                   .Build();
         });
 
-        // Register Storage Service Abstraction
         services.AddScoped<IStorageService, MinioStorageService>();
         services.AddScoped<IThumbnailJobService, ThumbnailJobService>();
         services.AddScoped<SitemapJob>();
         services.AddScoped<ISitemapJobService, SitemapJobService>();
+
+        // FR-OBS-001: Đăng ký Health Checks
+        services.AddHealthChecks()
+            // Liveness check
+            .AddCheck("self", () => HealthCheckResult.Healthy(), tags: new[] { "live" })
+            // Readiness checks (DB, Redis, MinIO)
+            .AddDbContextCheck<ApplicationDbContext>(
+                name: "postgresql",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "ready" })
+            .AddRedis(
+                redisConnectionString: configuration.GetConnectionString("Redis") ?? "localhost:6379",
+                name: "redis",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "ready" })
+            .AddCheck<MinioHealthCheck>(
+                name: "minio",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "ready" });
 
         return services;
     }
