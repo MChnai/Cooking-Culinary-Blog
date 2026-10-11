@@ -8,6 +8,14 @@ using CulinaryBlog.Infrastructure.Services;
 using Minio;
 using CulinaryBlog.Infrastructure.Storage;
 using CulinaryBlog.Infrastructure.Jobs;
+using CulinaryBlog.Infrastructure.HealthChecks;
+using CulinaryBlog.Application.Common.Metrics;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace CulinaryBlog.Infrastructure;
 
@@ -20,6 +28,9 @@ public static class DependencyInjection
 
         var minioOptions = configuration.GetSection(MinioOptions.SectionName).Get<MinioOptions>()!;
             services.Configure<MinioOptions>(configuration.GetSection(MinioOptions.SectionName));
+
+        var serviceName = configuration["OpenTelemetry:ServiceName"] ?? "CulinaryBlog.API";
+        var otlpEndpoint = configuration["OpenTelemetry:OtlpEndpoint"] ?? "http://localhost:4317";
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -48,11 +59,61 @@ public static class DependencyInjection
                   .Build();
         });
 
-        // Register Storage Service Abstraction
         services.AddScoped<IStorageService, MinioStorageService>();
         services.AddScoped<IThumbnailJobService, ThumbnailJobService>();
         services.AddScoped<SitemapJob>();
         services.AddScoped<ISitemapJobService, SitemapJobService>();
+
+        // FR-OBS-001: Đăng ký Health Checks
+        services.AddHealthChecks()
+            // Liveness check
+            .AddCheck("self", () => HealthCheckResult.Healthy(), tags: new[] { "live" })
+            // Readiness checks (DB, Redis, MinIO)
+            .AddDbContextCheck<ApplicationDbContext>(
+                name: "postgresql",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "ready" })
+            .AddRedis(
+                redisConnectionString: configuration.GetConnectionString("Redis") ?? "localhost:6379",
+                name: "redis",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "ready" })
+            .AddCheck<MinioHealthCheck>(
+                name: "minio",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "ready" });
+
+        // FR-OBS-003: Cấu hình OpenTelemetry Distributed Tracing & Metrics
+        services.AddOpenTelemetry()
+            .ConfigureResource(resource => resource.AddService(serviceName))
+            .WithTracing(tracing =>
+            {
+                tracing
+                    .AddSource(serviceName)
+                    .AddAspNetCoreInstrumentation(options =>
+                    {
+                        options.RecordException = true;
+                    })
+                    .AddHttpClientInstrumentation()
+                    .AddEntityFrameworkCoreInstrumentation() // Tự động ghi nhận SQL queries không cần cấu hình options
+                    .AddOtlpExporter(options =>
+                    {
+                        options.Endpoint = new Uri(otlpEndpoint);
+                        options.Protocol = OtlpExportProtocol.Grpc;
+                    });
+            })
+            .WithMetrics(metrics =>
+            {
+                metrics
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddMeter(CulinaryBlogMetrics.MeterName) // Đăng ký Custom Business Metrics
+                    .AddOtlpExporter(options =>
+                    {
+                        options.Endpoint = new Uri(otlpEndpoint);
+                        options.Protocol = OtlpExportProtocol.Grpc;
+                    });
+            });
 
         return services;
     }

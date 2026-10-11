@@ -1,6 +1,7 @@
 using CulinaryBlog.Application.Common.Interfaces;
 using Hangfire;
 using Microsoft.Extensions.Logging;
+using CulinaryBlog.Application.Common.Metrics;
 
 namespace CulinaryBlog.Infrastructure.Jobs;
 
@@ -21,5 +22,6 @@ public class WelcomeEmailJob
     {
         _logger.LogInformation("Thực thi Hangfire Job [FR-JOB-001]: Gửi email chào mừng tới {Email}", toEmail);
         await _emailService.SendWelcomeEmailAsync(toEmail, username);
+        CulinaryBlogMetrics.EmailsSentCounter.Add(1, new KeyValuePair<string, object?>("status", "success"));
     }
 }
