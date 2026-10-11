@@ -35,6 +35,8 @@ public static class DependencyInjection
 
         services.AddSingleton<IJwtService, Services.JwtService>();
         services.AddSingleton<IPasswordHasher, Services.PasswordHasher>();
+        services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IWelcomeEmailJobService, WelcomeEmailJobService>();
 
         // Register Minio Client SDK
         services.AddMinio(config =>
