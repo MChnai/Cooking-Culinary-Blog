@@ -1,27 +1,50 @@
-# .NET Build Results
-[Bb]in/
-[Oo]bj/
-[Ll]ogs/
-[Uu]serFiles/
+# ==========================================
+# 1. Node.js & React Frontend (Vite + TS)
+# ==========================================
+# Dependencies
+**/node_modules/
+node_modules/
+.pnpm-store/
+.yarn/
 
-# Build output folders
+# Build outputs
+**/dist/
+**/dist-ssr/
+**/build/
+*.local
+
+# Vite / TS Build Cache
+**/.vite/
+**/node_modules/.tmp/
+*.tsbuildinfo
+
+# Logs & Environment
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Editor & OS Files
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+
+# ==========================================
+# 2. .NET 10 / C# Backend
+# ==========================================
+# Build outputs
 **/bin/
 **/obj/
-*.dll
-*.pdb
-*.cache
-
-# Visual Studio cache/options
-.vs/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-
-# NuGet
-**/project.lock.json
-**/project.fragment.lock.json
-./artifacts/
+**/out/
 
 # User-specific files
 *.rsuser
@@ -29,3 +52,19 @@
 *.user
 *.userosscache
 *.sln.docstates
+
+# Entity Framework & Local DB
+*.db
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
+# Coverage & Test Results
+**/TestResults/
+**/coverage/
+
+# ==========================================
+# 3. Docker & Temporary Files
+# ==========================================
+*.log
+*.tmp
